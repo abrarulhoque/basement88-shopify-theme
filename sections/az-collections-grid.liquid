@@ -1,0 +1,602 @@
+{{ 'section-az-collections-grid.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --per-row: {{ section.settings.per_row }};
+  }
+  
+  .az-filter {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .az-filter__btn {
+    display: inline-block;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+    border: 1px solid #ddd;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .az-filter__btn:hover,
+  .az-filter__btn.active {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+  }
+  
+  .az-filter__btn.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  
+  .az-collections-grid__wrapper {
+    display: grid;
+    grid-template-columns: repeat(var(--per-row), 1fr);
+    gap: 1.5rem;
+  }
+  
+  @media screen and (max-width: 749px) {
+    .az-collections-grid__wrapper {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .az-collections-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem 0;
+  }
+  
+  {% render 'section-margin' %}
+{% endstyle %}
+
+<div class="az-collections-grid">
+  {% render 'section-header', section_button_label: false %}
+  
+  <div class="container">
+    <div class="az-filter">
+      <button class="az-filter__btn active" data-filter="all">{{ section.settings.all_label }}</button>
+      {% assign alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" | split: "" %}
+      {% for letter in alphabet %}
+        <button class="az-filter__btn" data-filter="{{ letter }}">{{ letter }}</button>
+      {% endfor %}
+    </div>
+    
+    {% liquid
+      case section.settings.sort
+        when 'products_high', 'products_low'
+          assign collections_sorted = collections | sort: 'all_products_count'
+        when 'date', 'date_reversed'
+          assign collections_sorted = collections | sort: 'published_at'
+        else
+          assign collections_sorted = collections | sort: 'title'
+      endcase
+
+      if section.settings.sort == 'products_high' or section.settings.sort == 'date_reversed' or section.settings.sort == 'alphabetical_reversed'
+        assign collections_sorted = collections_sorted | reverse
+      endif
+      
+      # Create an array of selected collections
+      assign selected_collections = array
+      for block in section.blocks
+        if block.type == 'collection' and block.settings.collection != blank
+          assign selected_collections = selected_collections | append: block.settings.collection
+        endif
+      endfor
+    %}
+    
+    <div class="az-collections-grid__wrapper">
+      {% if section.blocks.size > 0 %}
+        {% for block in section.blocks %}
+          {% if block.type == 'collection' and block.settings.collection != blank %}
+            {% assign collection = block.settings.collection %}
+            {% if collection.products_count > 0 or section.settings.show_empty_collections %}
+              {% assign first_letter = collection.title | upcase | slice: 0 %}
+              <div class="az-collections-card" data-letter="{{ first_letter }}" {{ block.shopify_attributes }}>
+                {% render 'collection-card',
+                  block_collection: collection,
+                  media_size: section.settings.image_ratio,
+                  url: collection.url,
+                  collection_title: collection.title,
+                  collection_desc: collection.description,
+                  collection_image: collection.image,
+                  show_collection_desc: section.settings.show_collection_desc,
+                  card_type: section.settings.card_type,
+                  show_collection_button: section.settings.show_collection_button,
+                  btn_label: section.settings.button_label,
+                  btn_link: collection.url,
+                  enable_arrow: section.settings.button_arrow,
+                  text_align: section.settings.text_horizontal,
+                  heading_size: section.settings.heading_size,
+                  desc_size: section.settings.desc_size,
+                  hover_effect: section.settings.hover_effect,
+                  text_animation: section.settings.text_animation,
+                %}
+              </div>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      {% else %}
+        {% comment %} If no collections are selected, show all collections by default {% endcomment %}
+        {% for collection in collections_sorted %}
+          {% if collection.products_count > 0 or section.settings.show_empty_collections %}
+            {% assign first_letter = collection.title | upcase | slice: 0 %}
+            <div class="az-collections-card" data-letter="{{ first_letter }}">
+              {% render 'collection-card',
+                block_collection: collection,
+                media_size: section.settings.image_ratio,
+                url: collection.url,
+                collection_title: collection.title,
+                collection_desc: collection.description,
+                collection_image: collection.image,
+                show_collection_desc: section.settings.show_collection_desc,
+                card_type: section.settings.card_type,
+                show_collection_button: section.settings.show_collection_button,
+                btn_label: section.settings.button_label,
+                btn_link: collection.url,
+                enable_arrow: section.settings.button_arrow,
+                text_align: section.settings.text_horizontal,
+                heading_size: section.settings.heading_size,
+                desc_size: section.settings.desc_size,
+                hover_effect: section.settings.hover_effect,
+                text_animation: section.settings.text_animation,
+              %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+      <div class="az-collections-empty" style="display: none;">
+        <p>{{ section.settings.no_results_message }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  class AZCollectionsFilter {
+    constructor(container) {
+      this.container = container;
+      this.buttons = container.querySelectorAll('.az-filter__btn');
+      this.collections = container.querySelectorAll('.az-collections-card');
+      this.emptyMessage = container.querySelector('.az-collections-empty');
+      this.activeFilter = 'all';
+      
+      this.init();
+    }
+    
+    init() {
+      // Initialize with all letters that have collections
+      this.updateAvailableLetters();
+      
+      // Add event listeners
+      this.buttons.forEach(button => {
+        button.addEventListener('click', () => {
+          if (button.classList.contains('disabled')) return;
+          
+          this.activeFilter = button.dataset.filter;
+          
+          // Update active button
+          this.buttons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          
+          // Filter collections
+          this.filterCollections();
+        });
+      });
+    }
+    
+    updateAvailableLetters() {
+      // Get all letters that have collections
+      const availableLetters = new Set();
+      this.collections.forEach(collection => {
+        availableLetters.add(collection.dataset.letter);
+      });
+      
+      // Disable buttons for letters without collections
+      this.buttons.forEach(button => {
+        if (button.dataset.filter !== 'all' && !availableLetters.has(button.dataset.filter)) {
+          button.classList.add('disabled');
+        }
+      });
+    }
+    
+    filterCollections() {
+      let visibleCount = 0;
+      
+      this.collections.forEach(collection => {
+        if (this.activeFilter === 'all' || collection.dataset.letter === this.activeFilter) {
+          collection.style.display = '';
+          visibleCount++;
+        } else {
+          collection.style.display = 'none';
+        }
+      });
+      
+      // Show empty message if no collections are visible
+      if (visibleCount === 0) {
+        this.emptyMessage.style.display = '';
+      } else {
+        this.emptyMessage.style.display = 'none';
+      }
+    }
+  }
+  
+  // Initialize on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    const containers = document.querySelectorAll('.az-collections-grid');
+    containers.forEach(container => {
+      new AZCollectionsFilter(container);
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "A-Z Collections Grid",
+  "tag": "section",
+  "class": "az-collections-grid-section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_header_type",
+      "label": "Header style",
+      "default": "type1",
+      "options": [
+        {
+          "value": "type1",
+          "label": "Style 1"
+        },
+        {
+          "value": "type2",
+          "label": "Style 2"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Designers",
+      "label": "Heading"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Explore thousands of the latest limited designer pieces at up to 60% discount.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_border_top",
+      "default": true,
+      "label": "Show top border"
+    },
+    {
+      "type": "header",
+      "content": "Filter Options"
+    },
+    {
+      "type": "text",
+      "id": "all_label",
+      "default": "All",
+      "label": "All filter label"
+    },
+    {
+      "type": "text",
+      "id": "no_results_message",
+      "default": "No collections found for this letter.",
+      "label": "No results message"
+    },
+    {
+      "type": "header",
+      "content": "Collection Options"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_empty_collections",
+      "default": false,
+      "label": "Show empty collections"
+    },
+    {
+      "type": "range",
+      "id": "per_row",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 3,
+      "label": "Collections per row"
+    },
+    {
+      "type": "select",
+      "id": "sort",
+      "options": [
+        {
+          "value": "alphabetical",
+          "label": "Alphabetical (A-Z)"
+        },
+        {
+          "value": "alphabetical_reversed",
+          "label": "Alphabetical (Z-A)"
+        },
+        {
+          "value": "date_reversed",
+          "label": "Date (newest first)"
+        },
+        {
+          "value": "date",
+          "label": "Date (oldest first)"
+        },
+        {
+          "value": "products_high",
+          "label": "Product count (high to low)"
+        },
+        {
+          "value": "products_low",
+          "label": "Product count (low to high)"
+        }
+      ],
+      "default": "alphabetical",
+      "label": "Sort collections by"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        {
+          "value": "landscape",
+          "label": "Landscape"
+        },
+        {
+          "value": "portrait",
+          "label": "Portrait"
+        },
+        {
+          "value": "square",
+          "label": "Square"
+        }
+      ],
+      "default": "square",
+      "label": "Image ratio"
+    },
+    {
+      "type": "select",
+      "id": "card_type",
+      "default": "overlay",
+      "label": "Card style",
+      "options": [
+        {
+          "value": "standart",
+          "label": "Standard"
+        },
+        {
+          "value": "overlay",
+          "label": "Overlay"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "hover_effect",
+      "label": "Hover effect",
+      "default": "zoom",
+      "options": [
+        {
+          "value": "blur",
+          "label": "Blur"
+        },
+        {
+          "value": "zoom",
+          "label": "Zoom"
+        },
+        {
+          "value": "shrink",
+          "label": "Shrink"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "text_horizontal",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        }
+      ],
+      "default": "center",
+      "label": "Text alignment"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "default": 20,
+      "unit": "%",
+      "label": "Overlay opacity"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h4",
+          "label": "Small"
+        },
+        {
+          "value": "h3",
+          "label": "Medium"
+        },
+        {
+          "value": "h2",
+          "label": "Large"
+        },
+        {
+          "value": "h1",
+          "label": "Extra large"
+        }
+      ],
+      "default": "h2",
+      "label": "Heading size"
+    },
+    {
+      "type": "select",
+      "id": "desc_size",
+      "options": [
+        {
+          "value": "small-font",
+          "label": "Small"
+        },
+        {
+          "value": "medium-font",
+          "label": "Medium"
+        },
+        {
+          "value": "",
+          "label": "Regular"
+        },
+        {
+          "value": "large-font",
+          "label": "Large"
+        }
+      ],
+      "default": "medium-font",
+      "label": "Description size"
+    },
+    {
+      "type": "checkbox",
+      "id": "text_animation",
+      "default": true,
+      "label": "Enable text animation"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_desc",
+      "default": true,
+      "label": "Show collection description"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_button",
+      "default": true,
+      "label": "Show collection button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "default": "View collection",
+      "label": "Button label"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_arrow",
+      "default": true,
+      "label": "Show button arrow"
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing"
+    },
+    {
+      "type": "select",
+      "id": "margin_top",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "None"
+        },
+        {
+          "value": "xs",
+          "label": "Extra small"
+        },
+        {
+          "value": "s",
+          "label": "Small"
+        },
+        {
+          "value": "m",
+          "label": "Medium"
+        },
+        {
+          "value": "l",
+          "label": "Large"
+        }
+      ],
+      "default": "no-indent",
+      "label": "Top margin"
+    },
+    {
+      "type": "select",
+      "id": "margin_bottom",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "None"
+        },
+        {
+          "value": "xs",
+          "label": "Extra small"
+        },
+        {
+          "value": "s",
+          "label": "Small"
+        },
+        {
+          "value": "m",
+          "label": "Medium"
+        },
+        {
+          "value": "l",
+          "label": "Large"
+        }
+      ],
+      "default": "l",
+      "label": "Bottom margin"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "A-Z Collections Grid",
+      "category": "Collections",
+      "blocks": [
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %} 

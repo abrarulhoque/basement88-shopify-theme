@@ -1,0 +1,35 @@
+.az-collections-grid {
+  position: relative;
+}
+
+.az-filter {
+  transition: opacity 0.3s ease;
+}
+
+.az-collections-card {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  opacity: 1;
+}
+
+.az-collections-card[style*='display: none'] {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+/* Responsive styles */
+@media screen and (max-width: 749px) {
+  .az-filter {
+    gap: 0.3rem;
+  }
+
+  .az-filter__btn {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .az-filter {
+    justify-content: center;
+  }
+}
