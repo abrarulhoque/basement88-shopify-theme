@@ -1,0 +1,106 @@
+<script src="{{ 'announcement.js' | asset_url }}" defer="defer"></script>
+
+{% if section.settings.height < 70 %}
+	<style>
+		:root {
+			--announcement-height: 52px;
+		}
+		@media screen and (min-width: 750px) {
+			:root {
+				--announcement-height: {{ section.settings.height }}px;
+			}
+		}
+	</style>
+{% else %}
+	<style>
+		:root {
+			--announcement-height: {{ section.settings.height }}px;
+		}
+	</style>
+{% endif %}
+
+<div
+	class="announcement-bar color-{{ section.settings.color_scheme }} background"
+	role="region"
+	aria-label="{{ 'sections.header.announcement' | t }}"
+	{{ block.shopify_attributes }}
+	data-id="shopify-section-{{ section.id }}"
+>
+	<div
+		class=" announcement-bar__container"
+		data-announcement-id="{{ section.id }}"
+	>
+		<div class="announcement-wrapper">
+			<div></div>
+			<div class="announcement-js-{{ section.id }}">
+				<div class="announcement-bar__box">
+					{%- if section.settings.text != blank -%}
+						<div class="announcement-bar__message">
+							{%- if section.settings.image != blank -%}
+								<figure class="announcement-bar__image">
+									{{
+										section.settings.image
+										| image_url: width: 375
+										| image_tag:
+											loading: 'lazy',
+											widths: '25, 75, 150, 275, 375'
+									}}
+								</figure>
+							{%- endif -%}
+							<div class="announcement-bar__text small-font">
+								{{ section.settings.text }}
+							</div>
+						</div>
+					{%- endif -%}
+				</div>
+			</div>
+			{% render 'icon-close' %}
+		</div>
+	</div>
+</div>
+
+{% schema %}
+{
+	"name": "t:sections.announcement-bar.name",
+	"class": "section-announcement",
+	"enabled_on": {
+		"groups": ["header"],
+		"templates": ["*"]
+	},
+	"settings": [
+		{
+			"type": "range",
+			"id": "height",
+			"min": 40,
+			"max": 100,
+			"step": 5,
+			"default": 40,
+			"label": "t:sections.announcement-bar.settings.height.label",
+			"info": "t:sections.announcement-bar.settings.height.info"
+		},
+		{
+			"type": "color_scheme",
+			"id": "color_scheme",
+			"default": "background-2",
+			"label": "t:sections.all.color_scheme.label"
+		},
+		{
+			"type": "image_picker",
+			"id": "image",
+			"label": "t:sections.announcement-bar.blocks.slide.settings.image.label",
+			"info": "t:sections.announcement-bar.blocks.slide.settings.image.info"
+		},
+		{
+			"type": "richtext",
+			"id": "text",
+			"default": "<p>For example, a test of the announcement of some news</p>",
+			"label": "t:sections.announcement-bar.blocks.slide.settings.text.label"
+		}
+	],
+	"presets": [
+		{
+			"name": "t:sections.announcement-bar.name"
+		}
+	]
+}
+{% endschema %}

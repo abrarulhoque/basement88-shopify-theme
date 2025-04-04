@@ -1,0 +1,234 @@
+/*
+* ------------------------------------------------------------
+* IMPORTANT: The contents of this file are auto-generated.
+*
+* This file may be updated by the Shopify admin theme editor
+* or related systems. Please exercise caution as any changes
+* made to this file may be overwritten.
+* ------------------------------------------------------------
+*/
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "padding_top": "no-indent",
+        "padding_bottom": "no-indent"
+      }
+    },
+    "slider_with_info_qj8ciQ": {
+      "type": "slider-with-info",
+      "blocks": {
+        "image_block_qdCQU3": {
+          "type": "image_block",
+          "settings": {
+          }
+        },
+        "image_block_eWWPkN": {
+          "type": "image_block",
+          "settings": {
+          }
+        },
+        "image_block_6KqhUq": {
+          "type": "image_block",
+          "settings": {
+          }
+        },
+        "heading_block_DyXnBR": {
+          "type": "heading_block",
+          "settings": {
+            "heading": "Heading",
+            "description": "<p>Description<\/p>",
+            "subheading": "Subheading"
+          }
+        },
+        "text_block_Ver8pU": {
+          "type": "text_block",
+          "settings": {
+            "subheading": "Subheading",
+            "description": "<p>Description<\/p>"
+          }
+        },
+        "text_block_dgBnd4": {
+          "type": "text_block",
+          "settings": {
+            "subheading": "Subheading",
+            "description": "<p>Description<\/p>"
+          }
+        }
+      },
+      "block_order": [
+        "image_block_qdCQU3",
+        "image_block_eWWPkN",
+        "image_block_6KqhUq",
+        "heading_block_DyXnBR",
+        "text_block_Ver8pU",
+        "text_block_dgBnd4"
+      ],
+      "settings": {
+        "section_header_type": "type2",
+        "enable_border_top": true,
+        "subheading": "",
+        "heading": "Stores",
+        "description": "",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "primary",
+        "button_arrow": false,
+        "is_autoplay": false,
+        "stop_autoplay": true,
+        "show_arrows": true,
+        "slideshow_speed": 1.1,
+        "slideshow_delay": 3,
+        "image_ratio": "landscape",
+        "margin_top": "no-indent",
+        "margin_bottom": "s"
+      }
+    },
+    "slider_with_info_JGxNFq": {
+      "type": "slider-with-info",
+      "blocks": {
+        "image_block_YYqG83": {
+          "type": "image_block",
+          "settings": {
+          }
+        },
+        "image_block_jHaxT4": {
+          "type": "image_block",
+          "settings": {
+          }
+        },
+        "image_block_9iLxQf": {
+          "type": "image_block",
+          "settings": {
+          }
+        },
+        "heading_block_QTrALw": {
+          "type": "heading_block",
+          "settings": {
+            "heading": "Heading",
+            "description": "<p>Description<\/p>",
+            "subheading": "Subheading"
+          }
+        },
+        "text_block_ciY3w8": {
+          "type": "text_block",
+          "settings": {
+            "subheading": "Subheading",
+            "description": "<p>Description<\/p>"
+          }
+        },
+        "text_block_4njCq8": {
+          "type": "text_block",
+          "settings": {
+            "subheading": "Subheading",
+            "description": "<p>Description<\/p>"
+          }
+        }
+      },
+      "block_order": [
+        "image_block_YYqG83",
+        "image_block_jHaxT4",
+        "image_block_9iLxQf",
+        "heading_block_QTrALw",
+        "text_block_ciY3w8",
+        "text_block_4njCq8"
+      ],
+      "settings": {
+        "section_header_type": "type2",
+        "enable_border_top": true,
+        "subheading": "",
+        "heading": "",
+        "description": "",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "primary",
+        "button_arrow": false,
+        "is_autoplay": false,
+        "stop_autoplay": true,
+        "show_arrows": true,
+        "slideshow_speed": 1.1,
+        "slideshow_delay": 3,
+        "image_ratio": "landscape",
+        "margin_top": "no-indent",
+        "margin_bottom": "s"
+      }
+    },
+    "slider_with_info_dCRtEX": {
+      "type": "slider-with-info",
+      "blocks": {
+        "image_block_exBECB": {
+          "type": "image_block",
+          "settings": {
+          }
+        },
+        "image_block_ttCnMA": {
+          "type": "image_block",
+          "settings": {
+          }
+        },
+        "image_block_bbgBQL": {
+          "type": "image_block",
+          "settings": {
+          }
+        },
+        "heading_block_hVJ3FE": {
+          "type": "heading_block",
+          "settings": {
+            "heading": "Heading",
+            "description": "<p>Description<\/p>",
+            "subheading": "Subheading"
+          }
+        },
+        "text_block_8CjeL8": {
+          "type": "text_block",
+          "settings": {
+            "subheading": "Subheading",
+            "description": "<p>Description<\/p>"
+          }
+        },
+        "text_block_crrX8t": {
+          "type": "text_block",
+          "settings": {
+            "subheading": "Subheading",
+            "description": "<p>Description<\/p>"
+          }
+        }
+      },
+      "block_order": [
+        "image_block_exBECB",
+        "image_block_ttCnMA",
+        "image_block_bbgBQL",
+        "heading_block_hVJ3FE",
+        "text_block_8CjeL8",
+        "text_block_crrX8t"
+      ],
+      "settings": {
+        "section_header_type": "type2",
+        "enable_border_top": true,
+        "subheading": "",
+        "heading": "",
+        "description": "",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "primary",
+        "button_arrow": false,
+        "is_autoplay": false,
+        "stop_autoplay": true,
+        "show_arrows": true,
+        "slideshow_speed": 1.1,
+        "slideshow_delay": 3,
+        "image_ratio": "landscape",
+        "margin_top": "no-indent",
+        "margin_bottom": "l"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "slider_with_info_qj8ciQ",
+    "slider_with_info_JGxNFq",
+    "slider_with_info_dCRtEX"
+  ]
+}
