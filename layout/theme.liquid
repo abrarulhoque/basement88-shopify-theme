@@ -27,7 +27,11 @@
 		{%- liquid
 		  assign potential_title = page_title
 		  if template contains 'product' and product.title != blank
-		    assign potential_title = product.title | append: " | Basement88"
+		    if product.metafields.custom.product_seo_title != blank
+		      assign potential_title = product.metafields.custom.product_seo_title
+		    else
+		      assign potential_title = product.title | append: " | Basement88"
+		    endif
 		  elsif page_title != blank
 		     assign potential_title = page_title | append: " | Basement88"
 		  else
@@ -36,7 +40,9 @@
 		-%}
 		<title>{{ potential_title | strip_html | escape }}</title>
 
-		{% if page_description %}
+		{% if template contains 'product' and product.metafields.custom.product_seo_description != blank %}
+			<meta name="description" content="{{ product.metafields.custom.product_seo_description | escape }}">
+		{% elsif page_description %}
 			<meta name="description" content="{{ page_description | escape }}">
 		{% endif %}
 
