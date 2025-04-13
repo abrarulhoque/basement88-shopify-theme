@@ -24,7 +24,17 @@
 			<link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
 		{%- endunless -%}
 
-		<title>{{ page_title }}</title>
+		{%- liquid
+		  assign potential_title = page_title
+		  if template contains 'product' and product.title != blank
+		    assign potential_title = product.title | append: " | Basement88"
+		  elsif page_title != blank
+		     assign potential_title = page_title | append: " | Basement88"
+		  else
+		     assign potential_title = shop.name
+		  endif
+		-%}
+		<title>{{ potential_title | strip_html | escape }}</title>
 
 		{% if page_description %}
 			<meta name="description" content="{{ page_description | escape }}">
@@ -205,7 +215,7 @@
           initMode: function (e) {
             let siteScheme = false;
             switch (
-              '{{ settings.color_scheme }}' // Field. User’s system preference.
+              '{{ settings.color_scheme }}' // Field. User's system preference.
             ) {
               case 'dark':
                 siteScheme = 'dark';
