@@ -1,0 +1,380 @@
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+{{ 'section-products-grid.css' | asset_url | stylesheet_tag }}
+
+<link
+  rel="preload"
+  href="{{ 'component-card.css' | asset_url }}"
+  as="style"
+  onload="this.onload=null;this.rel='stylesheet'"
+>
+
+<link
+  rel="preload"
+  href="{{ 'component-price.css' | asset_url }}"
+  as="style"
+  onload="this.onload=null;this.rel='stylesheet'"
+>
+
+<noscript>{{ 'component-card.css' | asset_url | stylesheet_tag }}</noscript>
+<noscript>{{ 'component-price.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- if settings.quickview_show -%}
+  <link
+    rel="preload"
+    href="{{ 'section-main-product.css' | asset_url }}"
+    as="style"
+    onload="this.onload=null;this.rel='stylesheet'"
+  >
+  <link
+    rel="stylesheet"
+    href="{{ 'component-deferred-media.css' | asset_url }}"
+    media="all"
+  >
+  <link
+    rel="preload"
+    href="{{ 'quick-add.css' | asset_url }}"
+    as="style"
+    onload="this.onload=null;this.rel='stylesheet'"
+  >
+
+  <script src="{{ 'quick-add.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{%- style -%}
+  {% render 'section-margin' %}
+  #shopify-section-{{ section.id }} {
+    --perRow: {{ section.settings.products_per_row }};
+  }
+{%- endstyle -%}
+
+{% liquid
+  assign collection = collections[section.settings.collection]
+  assign products_to_display = collection.products
+  
+  if section.settings.products_to_show > 0
+    assign products_limit = section.settings.products_to_show
+  else
+    assign products_limit = products_to_display.size
+  endif
+  
+  case section.settings.sort
+    when 'products_high', 'products_low'
+      assign products_to_display = products_to_display | sort: 'price_min'
+    when 'date', 'date_reversed'
+      assign products_to_display = products_to_display | sort: 'published_at'
+    when 'alphabetical', 'alphabetical_reversed'
+      assign products_to_display = products_to_display | sort: 'title'
+  endcase
+
+  if section.settings.sort == 'products_high' or section.settings.sort == 'date_reversed' or section.settings.sort == 'alphabetical_reversed'
+    assign products_to_display = products_to_display | reverse
+  endif
+%}
+
+<div class="custom-collection-products section-{{ section.id }}-padding">
+  <div class="container">
+    <div class="section-grid">
+      {% render 'section-header', text_size: 'large', show_arrows: section.settings.show_arrows %}
+
+      <div class="products-grid full-width content">
+        <ul
+          id="custom-collection-products"
+          data-id="{{ section.id }}"
+          class="collection-product-list {% if section.settings.show_two_cards %} collection-product-list--2-mobile{% endif %}"
+        >
+          {% if collection != blank and collection.products.size > 0 %}
+            {%- for product in products_to_display limit: products_limit -%}
+              <li class="collection-product-card {% if settings.on_hover == "hover" %}quickview--hover{% endif %}">
+                {% render 'product-card',
+                  product_card_product: product,
+                  media_size: section.settings.image_ratio,
+                  media_fit: section.settings.image_fit,
+                  show_secondary_image: section.settings.show_secondary_image,
+                  show_vendor: section.settings.show_vendor,
+                  show_color_swatch: section.settings.show_color_swatch,
+                  show_desc: section.settings.show_desc,
+                  section_id: section.id,
+                  add_id: forloop.index,
+                  show_sku: section.settings.show_sku,
+                  text_alignment: settings.card_text_alignment
+                %}
+              </li>
+            {%- endfor -%}
+          {% else %}
+            {%- for i in (1..4) -%}
+              <div class="popular-products__item_placeholder collection-popular-card collection-popular-card--placeholder">
+                {% render 'product-card-placeholder',
+                  media_ratio: section.settings.image_ratio,
+                  show_vendor: section.settings.show_vendor
+                %}
+              </div>
+            {%- endfor -%}
+          {% endif %}
+        </ul>
+      </div>
+      
+      {% if section.settings.view_all_link and collection != blank %}
+        <div class="center button-wrapper">
+          <a 
+            href="{{ collection.url }}" 
+            class="button button--{{ section.settings.button_style }} {% if section.settings.button_arrow %}button-arrow{% endif %}" 
+            aria-label="{{ 'sections.featured_collection.view_all_label' | t: collection_name: collection.title }}"
+          >
+            {{ section.settings.view_all_text | default: 'general.card.view__all' | t }}
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Custom Collection Products",
+  "tag": "section",
+  "class": "custom-collection-section",
+  "disabled_on": {
+    "templates": ["password"],
+    "groups": ["*"]
+  },
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "default": "Products Collection",
+      "label": "t:sections.all.heading.label"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "default": "<p>Description</p>",
+      "label": "t:sections.all.text.label"
+    },
+    {
+      "type": "text_alignment",
+      "id": "alignment",
+      "label": "t:sections.all.content_alignment.label",
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 4,
+      "max": 24,
+      "step": 1,
+      "default": 8,
+      "label": "Products to show"
+    },
+    {
+      "type": "range",
+      "id": "products_per_row",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 4,
+      "label": "Products per row"
+    },
+    {
+      "type": "select",
+      "id": "sort",
+      "options": [
+        {
+          "value": "alphabetical",
+          "label": "A-Z"
+        },
+        {
+          "value": "alphabetical_reversed",
+          "label": "Z-A"
+        },
+        {
+          "value": "date_reversed",
+          "label": "Newest to oldest"
+        },
+        {
+          "value": "date",
+          "label": "Oldest to newest"
+        },
+        {
+          "value": "products_high",
+          "label": "Price, high to low"
+        },
+        {
+          "value": "products_low",
+          "label": "Price, low to high"
+        }
+      ],
+      "default": "alphabetical",
+      "label": "Sort products"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.product_card.header.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_two_cards",
+      "default": false,
+      "label": "t:sections.all.product_card.mobile_card_count.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_secondary_image",
+      "default": true,
+      "label": "t:sections.all.product_card.show_secondary_image.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sku",
+      "default": false,
+      "label": "t:sections.all.sku.show_sku"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "default": true,
+      "label": "t:sections.all.product_card.show_vendor.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_desc",
+      "default": false,
+      "label": "t:sections.all.product_card.show_description.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_color_swatch",
+      "default": false,
+      "label": "t:sections.all.product_card.show_color.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.image.header.content"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        {
+          "value": "landscape",
+          "label": "t:sections.all.image.ratio.options__1.label"
+        },
+        {
+          "value": "portrait",
+          "label": "t:sections.all.image.ratio.options__2.label"
+        },
+        {
+          "value": "square",
+          "label": "t:sections.all.image.ratio.options__3.label"
+        }
+      ],
+      "default": "portrait",
+      "label": "t:sections.all.image.ratio.label"
+    },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "options": [
+        {
+          "value": "cover",
+          "label": "t:sections.all.image.fit.options__1.label"
+        },
+        {
+          "value": "contain",
+          "label": "t:sections.all.image.fit.options__2.label"
+        }
+      ],
+      "default": "cover",
+      "label": "t:sections.all.image.fit.label"
+    },
+    {
+      "type": "header",
+      "content": "View All Button"
+    },
+    {
+      "type": "checkbox",
+      "id": "view_all_link",
+      "default": true,
+      "label": "Show view all button"
+    },
+    {
+      "type": "text",
+      "id": "view_all_text",
+      "default": "View All",
+      "label": "Button text"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "options": [
+        {
+          "value": "primary",
+          "label": "Primary"
+        },
+        {
+          "value": "secondary",
+          "label": "Secondary"
+        },
+        {
+          "value": "tertiary",
+          "label": "Tertiary"
+        }
+      ],
+      "default": "primary",
+      "label": "Button style"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_arrow",
+      "default": false,
+      "label": "Show arrow"
+    },
+    {
+      "type": "header",
+      "content": "Slider Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "default": false,
+      "label": "Show arrows"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.section_pad.header.content"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "t:sections.all.section_pad.padding_top.label",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "t:sections.all.section_pad.padding_bottom.label",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Collection Products",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %} 
