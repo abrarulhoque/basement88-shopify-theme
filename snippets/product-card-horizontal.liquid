@@ -499,6 +499,9 @@
 			{%- if show_collection_name -%}
 				<div class="card-horizontal__collection-title">
 					{%- for collection in product_card_product.collections limit: 1 -%}
+						{%- comment %}<locksmith:d381>{% endcomment -%}
+						  {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: collection, subject_parent: product_card_product, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+						{%- comment %}</locksmith:d381>{% endcomment -%}
 						<a
 							href="{{ collection.url }}"
 							class="card__collection-title"

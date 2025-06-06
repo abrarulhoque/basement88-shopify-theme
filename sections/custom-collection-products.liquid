@@ -76,7 +76,7 @@
 <div class="custom-collection-products section-{{ section.id }}-padding">
   <div class="container">
     <div class="section-grid">
-      {% render 'section-header', text_size: 'large', show_arrows: section.settings.show_arrows %}
+      {% render 'section-header', text_size: 'large', show_arrows: section.settings.show_arrows, alignment: section.settings.alignment %}
 
       <div class="products-grid full-width content">
         <ul
@@ -368,66 +368,6 @@
       "unit": "px",
       "label": "t:sections.all.section_pad.padding_bottom.label",
       "default": 0
-    },
-    {
-      "type": "header",
-      "content": "Section Spacing"
-    },
-    {
-      "type": "select",
-      "id": "margin_top",
-      "options": [
-        {
-          "value": "no-indent",
-          "label": "None"
-        },
-        {
-          "value": "xs",
-          "label": "Extra small"
-        },
-        {
-          "value": "s",
-          "label": "Small"
-        },
-        {
-          "value": "m",
-          "label": "Medium"
-        },
-        {
-          "value": "l",
-          "label": "Large"
-        }
-      ],
-      "default": "no-indent",
-      "label": "Top margin"
-    },
-    {
-      "type": "select",
-      "id": "margin_bottom",
-      "options": [
-        {
-          "value": "no-indent",
-          "label": "None"
-        },
-        {
-          "value": "xs",
-          "label": "Extra small"
-        },
-        {
-          "value": "s",
-          "label": "Small"
-        },
-        {
-          "value": "m",
-          "label": "Medium"
-        },
-        {
-          "value": "l",
-          "label": "Large"
-        }
-      ],
-      "default": "l",
-      "label": "Bottom margin"
     }
   ],
   "presets": [

@@ -187,6 +187,9 @@
 												role="list"
 											>
 												{%- for item in search_products -%}
+													{%- comment %}<locksmith:ca0d>{% endcomment -%}
+													  {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: item, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+													{%- comment %}</locksmith:ca0d>{% endcomment -%}
 													<li class="collection-product-card template-search__item">
 														{%- capture product_settings -%}
 															{%- if section.settings.show_vendor -%}vendor,{%- endif -%}title,price{%- endcapture -%}
@@ -218,6 +221,9 @@
 											</div>
 											<ul class="collection-results collection-results--articles" role="list">
 												{%- for item in search_articles -%}
+													{%- comment %}<locksmith:9ca5>{% endcomment -%}
+													  {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: item, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+													{%- comment %}</locksmith:9ca5>{% endcomment -%}
 													{%- case item.object_type -%}
 														{%- when 'article' -%}
 															<li class="template-search__item article">
@@ -256,6 +262,9 @@
 												role="list"
 											>
 												{%- for item in search_pages -%}
+													{%- comment %}<locksmith:5f8a>{% endcomment -%}
+													  {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: item, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+													{%- comment %}</locksmith:5f8a>{% endcomment -%}
 													{%- case item.object_type -%}
 														{%- when 'page' -%}
 															<li class="template-search__item template-search__page color-{{ section.settings.color_scheme_page_card }} background">

@@ -14,7 +14,7 @@
       "address2": "Adresse 2",
       "city": "Ville",
       "country": "Pays",
-			"province": "Province",
+      "province": "Province",
       "zip": "Code postal",
       "phone": "Téléphone",
       "set_default": "Définir comme adresse par défaut",
@@ -34,7 +34,7 @@
     "login_page": {
       "submit": "Envoyer",
       "cancel": "Annuler",
-			"email": "E-mail",
+      "email": "E-mail",
       "create_account": "Créer un compte",
       "forgot_password": "Mot de passe oublié?",
       "guest_continue": "Continuer",
@@ -56,7 +56,7 @@
       "shipping_address": "adresse de livraison",
       "fulfillment_status": "Statut d'exécution",
       "discount": "Rabais",
-			"total": "Total",
+      "total": "Total",
       "shipping": "Expédition",
       "tax": "Impôt",
       "product": "Produit",
@@ -76,8 +76,8 @@
       "order_number_link": "Numéro de commande {{ number }}",
       "payment_status": "Statut de paiement",
       "fulfillment_status": "Statut d'exécution",
-			"total": "Total",
-			"date": "Date",
+      "total": "Total",
+      "date": "Date",
       "none": "Vous n'avez pas encore passé de commande"
     },
     "recover_password": {
@@ -88,7 +88,7 @@
     "register": {
       "breadcrumb": "Compte",
       "title": "Créer un compte",
-			"email": "E-mail",
+      "email": "E-mail",
       "first_name": "Prénom",
       "last_name": "Nom de famille",
       "password": "Mot de passe",
@@ -141,7 +141,7 @@
   },
   "popular": {
     "new": "Nouveau",
-		"url": "#"
+    "url": "#"
   },
   "general": {
     "card": {
@@ -167,9 +167,9 @@
       "success_message": "Lien copié dans le presse-papier !",
       "links": {
         "twitter": "Twitter",
-				"facebook": "Facebook",
-				"pinterest": "Pinterest",
-				"copy": "Copy Link"
+        "facebook": "Facebook",
+        "pinterest": "Pinterest",
+        "copy": "Copy Link"
       }
     },
     "blog": {
@@ -184,12 +184,12 @@
     "countdown": {
       "days": "Jours",
       "hours": "Heures",
-			"minutes": "Minutes",
+      "minutes": "Minutes",
       "seconds": "Secondes"
     },
     "breadcrumbs": {
       "home": "Maison",
-			"collections": "Collections"
+      "collections": "Collections"
     },
     "password_page": {
       "login_form_password_label": "Mot de passe",
@@ -199,7 +199,7 @@
       "modal": "Modal de mot de passe",
       "login_form_heading": "Entrez dans le magasin en utilisant le mot de passe :",
       "login_password_button": "Entrez en utilisant le mot de passe",
-      "admin_link_html": "Êtes-vous le propriétaire du magasin? <a href=\"\/admin\" class=\"link underlined-link\">Connectez-vous ici<\/a>",
+      "admin_link_html": "Êtes-vous le propriétaire du magasin? <a href=\"/admin\" class=\"link underlined-link\">Connectez-vous ici</a>",
       "powered_by_shopify_html": "Cette boutique sera alimentée par {{ shopify }}"
     },
     "social": {
@@ -210,18 +210,18 @@
       },
       "links": {
         "twitter": "Twitter",
-				"facebook": "Facebook",
-				"pinterest": "Pinterest",
-				"instagram": "Instagram",
-				"tumblr": "Tumblr",
-				"snapchat": "Snapchat",
-				"youtube": "YouTube",
-				"vimeo": "Vimeo",
-				"tiktok": "TikTok"
+        "facebook": "Facebook",
+        "pinterest": "Pinterest",
+        "instagram": "Instagram",
+        "tumblr": "Tumblr",
+        "snapchat": "Snapchat",
+        "youtube": "YouTube",
+        "vimeo": "Vimeo",
+        "tiktok": "TikTok"
       }
     },
     "pagination": {
-			"label": "Pagination",
+      "label": "Pagination",
       "next": "Page suivante",
       "previous": "Page précédente",
       "page": "{{ number }}"
@@ -230,8 +230,8 @@
       "search": "Recherche",
       "reset": "Réinitialiser",
       "placeholder": "Votre demande",
-			"collections": "Collections",
-			"pages": "Pages",
+      "collections": "Collections",
+      "pages": "Pages",
       "products": "Des produits",
       "articles": "Des articles",
       "popular_search": "Recherche populaire",
@@ -243,7 +243,7 @@
     "month_year": "%PAR"
   },
   "newsletter": {
-		"label": "E-mail",
+    "label": "E-mail",
     "success": "Merci pour votre subscription",
     "button_label": "S'abonner",
     "button_label_request": "Envoyer une demande"
@@ -273,7 +273,7 @@
   "blogs": {
     "article": {
       "title": "Le titre de l'article",
-			"blog": "Blog",
+      "blog": "Blog",
       "description": "Description d'article",
       "author": "Auteur de l'article",
       "read_more_title": "Lire la suite : {{ title }}",
@@ -306,7 +306,7 @@
   },
   "products": {
     "product": {
-			"back": "Collection",
+      "back": "Collection",
       "add_to_cart": "Ajouter au panier",
       "on_sale": "Vente",
       "choose_product_options": "Choisissez les options pour {{ product_name }}",
@@ -328,7 +328,7 @@
         "minimum_of": "Minimum de {{ quantity }}",
         "maximum_of": "Maximum de {{ quantity }}",
         "multiples_of": "Incréments de {{ quantity }}",
-        "in_cart_html": "<span class=\"quantity-cart\">{{ quantity }}<\/span> dans le panier",
+        "in_cart_html": "<span class=\"quantity-cart\">{{ quantity }}</span> dans le panier",
         "in_stock": "{{ quantity }} articles en stock",
         "out_of_stock": "En rupture de stock"
       },
@@ -337,8 +337,8 @@
         "read_more": "En savoir plus",
         "check_other_stores": "Vérifier la disponibilité dans d'autres magasins",
         "pick_up_available": "Ramassage disponible",
-        "pick_up_available_at_html": "Prise en charge disponible à <span class=\"color-foreground\">{{ location_name }}<\/span>",
-        "pick_up_unavailable_at_html": "Retrait actuellement indisponible à <span class=\"color-foreground\">{{ location_name }}<\/span>",
+        "pick_up_available_at_html": "Prise en charge disponible à <span class=\"color-foreground\">{{ location_name }}</span>",
+        "pick_up_unavailable_at_html": "Retrait actuellement indisponible à <span class=\"color-foreground\">{{ location_name }}</span>",
         "unavailable": "Impossible de charger la disponibilité du ramassage",
         "refresh": "Rafraîchir"
       },
@@ -361,7 +361,7 @@
       "product_description": "Description de votre produit",
       "video_exit_message": "{{ title }} ouvre la vidéo en plein écran dans la même fenêtre.",
       "include_taxes": "Taxe inclu.",
-      "shipping_policy_html": "<a href=\"&lt;span%20class='notranslate'&gt;{{%20link%20}}&lt;\/span&gt;\">Frais de port<\/a> calculés à la caisse.",
+      "shipping_policy_html": "<a href=\"&lt;span%20class='notranslate'&gt;{{%20link%20}}&lt;/span&gt;\">Frais de port</a> calculés à la caisse.",
       "xr_button": "Visualisez dans votre espace",
       "xr_button_label": "Visualisez dans votre espace, charge l'élément dans la fenêtre de réalité augmentée",
       "color": "Couleur",
@@ -412,7 +412,7 @@
         "one": "{{ count }} résultat trouvé pour « {{ terms }} »",
         "other": "{{ count }} résultats trouvés pour « {{ terms }} »"
       },
-			"page": "Page",
+      "page": "Page",
       "title": "Résultats de recherche",
       "results_count": {
         "one": "{{ count }} résultat",
@@ -446,7 +446,7 @@
         "phone": "Numéro de téléphone",
         "comment": "Votre demande",
         "send": "Envoyer une demande",
-				"email": "E-mail",
+        "email": "E-mail",
         "submit": "Soumettre",
         "post_success": "Merci de nous avoir contacté. Nous vous répondrons dans les plus brefs délais.",
         "error_heading": "Veuillez ajuster les éléments suivants :"
@@ -461,12 +461,12 @@
     "country_label": "Devise",
     "language_label": "Langue",
     "update_language": "Mettre à jour la langue",
-    "update_country": "Mettre à jour le pays\/la région"
+    "update_country": "Mettre à jour le pays/la région"
   },
   "sections": {
     "header": {
       "announcement": "Annonce",
-			"menu": "Menu",
+      "menu": "Menu",
       "popular_articles": "Articles populaires",
       "popular_items": "Articles populaires",
       "cart_count": "( {{ count }} )"
@@ -493,9 +493,9 @@
       "empty_text": "Ne manquez pas les meilleures offres ! Votre panier est peut-être vide maintenant, mais laissez-nous vous aider à le remplir de produits incroyables.",
       "cart_error": "Une erreur s'est produite lors de la mise à jour de votre panier. Veuillez réessayer.",
       "cart_quantity_error_html": "Vous ne pouvez ajouter que [quantité] de cet article à votre panier.",
-      "taxes_and_shipping_policy_at_checkout_html": "Taxes et <a href=\"&lt;span%20class='notranslate'&gt;{{%20link%20}}&lt;\/span&gt;\">frais d'expédition<\/a> calculés à la caisse",
+      "taxes_and_shipping_policy_at_checkout_html": "Taxes et <a href=\"&lt;span%20class='notranslate'&gt;{{%20link%20}}&lt;/span&gt;\">frais d'expédition</a> calculés à la caisse",
       "taxes_included_but_shipping_at_checkout": "Taxes incluses et frais de port calculés à la caisse",
-      "taxes_included_and_shipping_policy_html": "Taxe inclu. <a href=\"&lt;span%20class='notranslate'&gt;{{%20link%20}}&lt;\/span&gt;\">Frais de port<\/a> calculés à la caisse.",
+      "taxes_included_and_shipping_policy_html": "Taxe inclu. <a href=\"&lt;span%20class='notranslate'&gt;{{%20link%20}}&lt;/span&gt;\">Frais de port</a> calculés à la caisse.",
       "taxes_and_shipping_at_checkout": "Taxes et frais d'expédition calculés à la caisse"
     },
     "categories-list": {
@@ -520,7 +520,7 @@
     },
     "collection_template": {
       "all": "Tous",
-			"title": "Collection",
+      "title": "Collection",
       "apply": "Appliquer",
       "clear": "Clair",
       "clear_all": "Tout effacer",
@@ -543,15 +543,15 @@
         "one": "Affichage de {{ product_count }} sur {{ count }} produit",
         "other": "Affichage de {{ product_count }} sur {{ count }} produits"
       },
-      "use_fewer_filters_html": "Revenir à la liste des <a class=\"&lt;span class='notranslate'&gt;{{ class }}&lt;\/span&gt;\" href=\"&lt;span%20class='notranslate'&gt;{{%20link%20}}&lt;\/span&gt;\">collections<\/a>",
-      "results_use_fewer_filters_html": "Utilisez moins de filtres ou <a class=\"&lt;span class='notranslate'&gt;{{ class }}&lt;\/span&gt;\" href=\"&lt;span%20class='notranslate'&gt;{{%20link%20}}&lt;\/span&gt;\">supprimez tout<\/a>"
+      "use_fewer_filters_html": "Revenir à la liste des <a class=\"&lt;span class='notranslate'&gt;{{ class }}&lt;/span&gt;\" href=\"&lt;span%20class='notranslate'&gt;{{%20link%20}}&lt;/span&gt;\">collections</a>",
+      "results_use_fewer_filters_html": "Utilisez moins de filtres ou <a class=\"&lt;span class='notranslate'&gt;{{ class }}&lt;/span&gt;\" href=\"&lt;span%20class='notranslate'&gt;{{%20link%20}}&lt;/span&gt;\">supprimez tout</a>"
     },
     "video": {
       "load_video": "Chargement de la vidéo"
     }
   },
   "about": {
-		"description": "Description",
+    "description": "Description",
     "more": "Plus",
     "less": "Moins"
   },
@@ -561,13 +561,19 @@
       "email": "E-mail",
       "name": "Nom",
       "send_on": "AAAA-MM-JJ",
-			"message": "Message",
+      "message": "Message",
       "checkbox": "Je veux l'envoyer en cadeau",
       "email_label_optional_for_no_js_behavior": "E-mail du destinataire (facultatif)",
       "name_label": "Nom du destinataire (facultatif)",
       "message_label": "Message (optionnel)",
       "max_characters": "{{ max_chars }} caractères maximum",
       "send_on_label": "Envoyer (facultatif)"
+    }
+  },
+  "locksmith": {
+    "forms": {
+      "submit_button_text": "Continue",
+      "loading_text": "One moment..."
     }
   }
 }

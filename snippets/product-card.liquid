@@ -732,6 +732,9 @@
 			{%- endif -%}
 			{%- if show_collection_name -%}
 				{%- for collection in product_card_product.collections limit: 1 -%}
+					{%- comment %}<locksmith:eb26>{% endcomment -%}
+					  {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: collection, subject_parent: product_card_product, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+					{%- comment %}</locksmith:eb26>{% endcomment -%}
 					<a
 						href="{{ collection.url }}"
 						class="card__collection-title subtitle unstyled-link"

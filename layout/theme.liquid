@@ -1,3 +1,7 @@
+{%- comment %}<locksmith:a321>{% endcomment -%}
+  {%- include 'locksmith' -%}
+{%- comment %}</locksmith:a321>{% endcomment -%}
+
 <!doctype html>
 <html
 	class="no-js"
@@ -5,6 +9,7 @@
 	lang="{{ request.locale.iso_code }}"
 >
 	<head>
+		{{ locksmith_initializations }}
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width,initial-scale=1">
@@ -41,9 +46,15 @@
 		<title>{{ potential_title | strip_html | escape }}</title>
 
 		{% if template contains 'product' and product.metafields.custom.product_seo_description != blank %}
-			<meta name="description" content="{{ product.metafields.custom.product_seo_description | escape }}">
+			{%- comment %}<locksmith:2e6c>{% endcomment -%}
+			  {%- capture var %}{% render 'locksmith-variables', variable: 'transparent', hiding_scope: 'resource' %}{% endcapture %}{% if var == 'true' %}<meta name="description" content="{{ product.metafields.custom.product_seo_description | escape }}">{% endif -%}
+			  {%- comment %}original: <meta name="description" content="{{ product.metafields.custom.product_seo_description | escape }}">{%- endcomment %}
+			{%- comment %}</locksmith:2e6c>{% endcomment -%}
 		{% elsif page_description %}
-			<meta name="description" content="{{ page_description | escape }}">
+			{%- comment %}<locksmith:7f48>{% endcomment -%}
+			  {%- capture var %}{% render 'locksmith-variables', variable: 'transparent', hiding_scope: 'resource' %}{% endcapture %}{% if var == 'true' %}<meta name="description" content="{{ page_description | escape }}">{% endif -%}
+			  {%- comment %}original: <meta name="description" content="{{ page_description | escape }}">{%- endcomment %}
+			{%- comment %}</locksmith:7f48>{% endcomment -%}
 		{% endif %}
 
 		{% render 'meta-tags' %}

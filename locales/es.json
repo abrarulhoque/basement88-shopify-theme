@@ -12,7 +12,7 @@
       "menu": "Menú",
       "popular_articles": "Artículos populares",
       "popular_items": "Artículos populares",
-			"cart_count": "{{ count }}"
+      "cart_count": "{{ count }}"
     },
     "cart": {
       "title_first": "Compras",
@@ -592,6 +592,12 @@
     "404": {
       "title": "404. Página no encontrada",
       "text": "Esto puede deberse a que el enlace ha expirado o el sitio web está experimentando algunos problemas en segundo plano. Tal vez la búsqueda pueda ayudarte."
+    }
+  },
+  "locksmith": {
+    "forms": {
+      "submit_button_text": "Continue",
+      "loading_text": "One moment..."
     }
   }
 }

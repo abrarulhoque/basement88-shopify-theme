@@ -6,6 +6,15 @@
 	assign section_button_label = section.settings.button_label
 	assign section_button_link = section.settings.button_link
 	assign enable_border_top = section.settings.enable_border_top
+
+	assign style = ''
+	if show_arrows != true and section_button_label == blank and alignment
+		if alignment == 'center'
+			assign style = 'justify-content: center;'
+		elsif alignment == 'right'
+			assign style = 'justify-content: flex-end;'
+		endif
+	endif
 %}
 {%- if section_heading != blank
 	or section_button_label != blank
@@ -59,7 +68,7 @@
 						{% endif %}
 					</div>
 				{%- else -%}
-					<div class="section-header__title__block {% if enable_border_top %} section_border_bottom{% endif %}">
+					<div class="section-header__title__block {% if enable_border_top %} section_border_bottom{% endif %}" style="{{ style }} text-align: {{ alignment }};">
 						{%- if section_heading != blank
 							or section_subheading != blank
 							or section_description != blank

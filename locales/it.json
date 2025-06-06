@@ -70,10 +70,10 @@
     },
     "header": {
       "announcement": "Annuncio",
-			"menu": "Menu",
+      "menu": "Menu",
       "popular_articles": "Articoli popolari",
       "popular_items": "Articoli popolari",
-			"cart_count": "{{ count }}"
+      "cart_count": "{{ count }}"
     },
     "footer": {
       "payment": "Metodi di pagamento",
@@ -482,5 +482,11 @@
   "onboarding": {
     "product_title": "Esempio di titolo del prodotto",
     "collection_title": "Il nome della tua collezione"
+  },
+  "locksmith": {
+    "forms": {
+      "submit_button_text": "Continue",
+      "loading_text": "One moment..."
+    }
   }
 }

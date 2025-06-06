@@ -38,6 +38,9 @@
 		{%- paginate collections by section.settings.collection_per_page -%}
 			<ul class="collection-product-list collections-grid" role="list">
 				{%- for collection in collections -%}
+					{%- comment %}<locksmith:eb12>{% endcomment -%}
+					  {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: collection, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+					{%- comment %}</locksmith:eb12>{% endcomment -%}
 					<li class="collections-grid__card">
 						{% render 'collection-card',
 							block_collection: collection,

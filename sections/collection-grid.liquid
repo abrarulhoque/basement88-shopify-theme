@@ -81,6 +81,9 @@
 			{% when 'grid' %}
 				<div class="collection-grid__wrapper">
 					{%- for block in section.blocks -%}
+						{%- comment %}<locksmith:727b>{% endcomment -%}
+						  {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: block.settings.collection, subject_parent: section, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+						{%- comment %}</locksmith:727b>{% endcomment -%}
 						<div
 							class="collection-grid__cards"
 							style="grid-column-start: {{ block.settings.column_start }}; grid-column-end: {{ block.settings.column_end }}; grid-row-start: {{ block.settings.row_start }}; grid-row-end: {{ block.settings.row_end }};"
@@ -113,6 +116,9 @@
 				<div class="swiper">
 					<div class="swiper-wrapper">
 						{%- for block in section.blocks -%}
+							{%- comment %}<locksmith:f529>{% endcomment -%}
+							  {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: block.settings.collection, subject_parent: section, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+							{%- comment %}</locksmith:f529>{% endcomment -%}
 							<div class="collection-grid__cards-slider swiper-slide">
 								{%
 									render 'collection-card',

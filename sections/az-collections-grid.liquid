@@ -81,19 +81,194 @@
       if section.settings.sort == 'products_high' or section.settings.sort == 'date_reversed' or section.settings.sort == 'alphabetical_reversed'
         assign collections_sorted = collections_sorted | reverse
       endif
-      
-      # Create an array of selected collections
-      assign selected_collections = array
-      for block in section.blocks
-        if block.type == 'collection' and block.settings.collection != blank
-          assign selected_collections = selected_collections | append: block.settings.collection
-        endif
-      endfor
     %}
     
     <div class="az-collections-grid__wrapper">
-      {% if section.blocks.size > 0 %}
+      {% if section.settings.metaobject_type != blank and section.settings.metaobject_handles != blank %}
+        {% assign metaobject_handles = section.settings.metaobject_handles | split: ',' %}
+        
+        {% for metaobject_handle in metaobject_handles %}
+          {% assign trimmed_handle = metaobject_handle | strip %}
+          {% assign metaobject = shop.metaobjects[section.settings.metaobject_type][trimmed_handle] %}
+          
+          {% comment %} Check if selected_collections field exists and has references {% endcomment %}
+          {% if metaobject.selected_collections.value and metaobject.selected_collections.type == "list.collection_reference" %}
+            {% for collection in metaobject.selected_collections.value %}
+              {%- comment %}<locksmith:4564>{% endcomment -%}
+                {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: collection, subject_parent: metaobject.selected_collections, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+              {%- comment %}</locksmith:4564>{% endcomment -%}
+              {% if collection.products_count > 0 or section.settings.show_empty_collections %}
+                {% assign first_letter = collection.title | upcase | slice: 0 %}
+                <div class="az-collections-card" data-letter="{{ first_letter }}">
+                  {% render 'collection-card',
+                    block_collection: collection,
+                    media_size: section.settings.image_ratio,
+                    url: collection.url,
+                    collection_title: collection.title,
+                    collection_desc: collection.description,
+                    collection_image: collection.image,
+                    show_collection_desc: section.settings.show_collection_desc,
+                    card_type: section.settings.card_type,
+                    show_collection_button: section.settings.show_collection_button,
+                    btn_label: section.settings.button_label,
+                    btn_link: collection.url,
+                    enable_arrow: section.settings.button_arrow,
+                    text_align: section.settings.text_horizontal,
+                    heading_size: section.settings.heading_size,
+                    desc_size: section.settings.desc_size,
+                    hover_effect: section.settings.hover_effect,
+                    text_animation: section.settings.text_animation
+                  %}
+                </div>
+              {% endif %}
+            {% endfor %}
+          {% elsif metaobject.selected_collections %}
+            {% comment %} Access collections directly from the field value {% endcomment %}
+            {% for collection_data in metaobject.selected_collections.value %}
+              {%- comment %}<locksmith:2024>{% endcomment -%}
+                {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: collection_data, subject_parent: metaobject.selected_collections, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+              {%- comment %}</locksmith:2024>{% endcomment -%}
+              {% assign collection = collections[collection_data.handle] %}
+              {% if collection %}
+                {% if collection.products_count > 0 or section.settings.show_empty_collections %}
+                  {% assign first_letter = collection.title | upcase | slice: 0 %}
+                  <div class="az-collections-card" data-letter="{{ first_letter }}">
+                    {% render 'collection-card',
+                      block_collection: collection,
+                      media_size: section.settings.image_ratio,
+                      url: collection.url,
+                      collection_title: collection.title,
+                      collection_desc: collection.description,
+                      collection_image: collection.image,
+                      show_collection_desc: section.settings.show_collection_desc,
+                      card_type: section.settings.card_type,
+                      show_collection_button: section.settings.show_collection_button,
+                      btn_label: section.settings.button_label,
+                      btn_link: collection.url,
+                      enable_arrow: section.settings.button_arrow,
+                      text_align: section.settings.text_horizontal,
+                      heading_size: section.settings.heading_size,
+                      desc_size: section.settings.desc_size,
+                      hover_effect: section.settings.hover_effect,
+                      text_animation: section.settings.text_animation
+                    %}
+                  </div>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        {% endfor %}
+      {% elsif section.settings.metaobject_type != blank and section.settings.metaobject_handle != blank %}
+        {% assign metaobject = shop.metaobjects[section.settings.metaobject_type][section.settings.metaobject_handle] %}
+        
+        {% comment %} Check if selected_collections field exists and has references {% endcomment %}
+        {% if metaobject.selected_collections.value and metaobject.selected_collections.type == "list.collection_reference" %}
+          {% for collection in metaobject.selected_collections.value %}
+            {%- comment %}<locksmith:ab42>{% endcomment -%}
+              {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: collection, subject_parent: metaobject.selected_collections, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+            {%- comment %}</locksmith:ab42>{% endcomment -%}
+            {% if collection.products_count > 0 or section.settings.show_empty_collections %}
+              {% assign first_letter = collection.title | upcase | slice: 0 %}
+              <div class="az-collections-card" data-letter="{{ first_letter }}">
+                {% render 'collection-card',
+                  block_collection: collection,
+                  media_size: section.settings.image_ratio,
+                  url: collection.url,
+                  collection_title: collection.title,
+                  collection_desc: collection.description,
+                  collection_image: collection.image,
+                  show_collection_desc: section.settings.show_collection_desc,
+                  card_type: section.settings.card_type,
+                  show_collection_button: section.settings.show_collection_button,
+                  btn_label: section.settings.button_label,
+                  btn_link: collection.url,
+                  enable_arrow: section.settings.button_arrow,
+                  text_align: section.settings.text_horizontal,
+                  heading_size: section.settings.heading_size,
+                  desc_size: section.settings.desc_size,
+                  hover_effect: section.settings.hover_effect,
+                  text_animation: section.settings.text_animation
+                %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% elsif metaobject.selected_collections %}
+          {% comment %} Access collections directly from the field value {% endcomment %}
+          {% for collection_data in metaobject.selected_collections.value %}
+            {%- comment %}<locksmith:86bd>{% endcomment -%}
+              {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: collection_data, subject_parent: metaobject.selected_collections, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+            {%- comment %}</locksmith:86bd>{% endcomment -%}
+            {% assign collection = collections[collection_data.handle] %}
+            {% if collection %}
+              {% if collection.products_count > 0 or section.settings.show_empty_collections %}
+                {% assign first_letter = collection.title | upcase | slice: 0 %}
+                <div class="az-collections-card" data-letter="{{ first_letter }}">
+                  {% render 'collection-card',
+                    block_collection: collection,
+                    media_size: section.settings.image_ratio,
+                    url: collection.url,
+                    collection_title: collection.title,
+                    collection_desc: collection.description,
+                    collection_image: collection.image,
+                    show_collection_desc: section.settings.show_collection_desc,
+                    card_type: section.settings.card_type,
+                    show_collection_button: section.settings.show_collection_button,
+                    btn_label: section.settings.button_label,
+                    btn_link: collection.url,
+                    enable_arrow: section.settings.button_arrow,
+                    text_align: section.settings.text_horizontal,
+                    heading_size: section.settings.heading_size,
+                    desc_size: section.settings.desc_size,
+                    hover_effect: section.settings.hover_effect,
+                    text_animation: section.settings.text_animation
+                  %}
+                </div>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      {% elsif section.settings.metafield_namespace != blank and section.settings.metafield_key != blank %}
+        {% assign metafield_collections = shop.metafields[section.settings.metafield_namespace][section.settings.metafield_key].value %}
+        
+        {% if metafield_collections.size > 0 %}
+          {% for collection_handle in metafield_collections %}
+            {%- comment %}<locksmith:50f2>{% endcomment -%}
+              {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: collection_handle, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+            {%- comment %}</locksmith:50f2>{% endcomment -%}
+            {% assign collection = collections[collection_handle] %}
+            {% if collection %}
+              {% if collection.products_count > 0 or section.settings.show_empty_collections %}
+                {% assign first_letter = collection.title | upcase | slice: 0 %}
+                <div class="az-collections-card" data-letter="{{ first_letter }}">
+                  {% render 'collection-card',
+                    block_collection: collection,
+                    media_size: section.settings.image_ratio,
+                    url: collection.url,
+                    collection_title: collection.title,
+                    collection_desc: collection.description,
+                    collection_image: collection.image,
+                    show_collection_desc: section.settings.show_collection_desc,
+                    card_type: section.settings.card_type,
+                    show_collection_button: section.settings.show_collection_button,
+                    btn_label: section.settings.button_label,
+                    btn_link: collection.url,
+                    enable_arrow: section.settings.button_arrow,
+                    text_align: section.settings.text_horizontal,
+                    heading_size: section.settings.heading_size,
+                    desc_size: section.settings.desc_size,
+                    hover_effect: section.settings.hover_effect,
+                    text_animation: section.settings.text_animation
+                  %}
+                </div>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      {% elsif section.blocks.size > 0 %}
         {% for block in section.blocks %}
+          {%- comment %}<locksmith:9b75>{% endcomment -%}
+            {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: block.settings.collection, subject_parent: section, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+          {%- comment %}</locksmith:9b75>{% endcomment -%}
           {% if block.type == 'collection' and block.settings.collection != blank %}
             {% assign collection = block.settings.collection %}
             {% if collection.products_count > 0 or section.settings.show_empty_collections %}
@@ -116,7 +291,7 @@
                   heading_size: section.settings.heading_size,
                   desc_size: section.settings.desc_size,
                   hover_effect: section.settings.hover_effect,
-                  text_animation: section.settings.text_animation,
+                  text_animation: section.settings.text_animation
                 %}
               </div>
             {% endif %}
@@ -125,6 +300,9 @@
       {% else %}
         {% comment %} If no collections are selected, show all collections by default {% endcomment %}
         {% for collection in collections_sorted %}
+          {%- comment %}<locksmith:35e1>{% endcomment -%}
+            {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: collection, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+          {%- comment %}</locksmith:35e1>{% endcomment -%}
           {% if collection.products_count > 0 or section.settings.show_empty_collections %}
             {% assign first_letter = collection.title | upcase | slice: 0 %}
             <div class="az-collections-card" data-letter="{{ first_letter }}">
@@ -145,8 +323,8 @@
                 heading_size: section.settings.heading_size,
                 desc_size: section.settings.desc_size,
                 hover_effect: section.settings.hover_effect,
-                text_animation: section.settings.text_animation,
-              %}
+                text_animation: section.settings.text_animation
+                %}
             </div>
           {% endif %}
         {% endfor %}
@@ -280,6 +458,44 @@
       "id": "enable_border_top",
       "default": true,
       "label": "Show top border"
+    },
+    {
+      "type": "header",
+      "content": "Metaobject Collection Selection"
+    },
+    {
+      "type": "text",
+      "id": "metaobject_type",
+      "label": "Metaobject type",
+      "info": "e.g. az_collections_list (API key of your metaobject definition)"
+    },
+    {
+      "type": "text",
+      "id": "metaobject_handles",
+      "label": "Metaobject handles (comma-separated)",
+      "info": "e.g. az-collections-list-part1, az-collections-list-part2, az-collections-list-part3"
+    },
+    {
+      "type": "text",
+      "id": "metaobject_handle",
+      "label": "Metaobject handle (single)",
+      "info": "e.g. az-collections-list-twtuk1lv (handle of your metaobject entry)"
+    },
+    {
+      "type": "header",
+      "content": "Legacy Metafield Collection Selection"
+    },
+    {
+      "type": "text",
+      "id": "metafield_namespace",
+      "label": "Metafield namespace",
+      "info": "e.g. custom"
+    },
+    {
+      "type": "text",
+      "id": "metafield_key",
+      "label": "Metafield key",
+      "info": "e.g. az_collections"
     },
     {
       "type": "header",
