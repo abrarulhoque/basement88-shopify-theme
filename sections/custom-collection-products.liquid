@@ -122,7 +122,7 @@
             class="button button--{{ section.settings.button_style }} {% if section.settings.button_arrow %}button-arrow{% endif %}" 
             aria-label="{{ 'sections.featured_collection.view_all_label' | t: collection_name: collection.title }}"
           >
-            {{ section.settings.view_all_text | default: 'general.card.view__all' | t }}
+            {{ section.settings.view_all_text | default: 'View All' }}
           </a>
         </div>
       {% endif %}
