@@ -43,6 +43,7 @@
 	data-time="{{ section.settings.time_picker }}"
 	data-timezone="{{ section.settings.time_zone }}"
 	data-completed="{{ section.settings.completed_countdown }}"
+	data-daily-reset="{{ section.settings.daily_reset }}"
 >
 	{% if section.settings.section_layout == "container" %}
 		<div class="container ">
@@ -468,6 +469,13 @@
 			],
 			"default": "show_text",
 			"label": "t:sections.countdown.settings.completed_countdown.label"
+		},
+		{
+			"type": "checkbox",
+			"id": "daily_reset",
+			"default": false,
+			"label": "t:sections.countdown.settings.daily_reset.label",
+			"info": "t:sections.countdown.settings.daily_reset.info"
 		},
 		{
 			"type": "inline_richtext",
