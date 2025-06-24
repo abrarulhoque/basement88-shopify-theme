@@ -1,0 +1,287 @@
+{{ 'collections-directory.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
+  }
+{% endstyle %}
+
+<div class="collections-directory">
+  <div class="container">
+    {% if section.settings.heading != blank %}
+      <div class="collections-directory__header">
+        <h1 class="collections-directory__title">{{ section.settings.heading }}</h1>
+      </div>
+    {% endif %}
+
+    <!-- Search Box -->
+    <div class="collections-directory__search">
+      <input 
+        type="text" 
+        id="collections-search" 
+        placeholder="{{ section.settings.search_placeholder | default: 'Search designers' }}"
+        class="collections-directory__search-input"
+      >
+    </div>
+
+    <!-- Alphabetical Navigation -->
+    <div class="collections-directory__nav">
+      <button class="collections-directory__nav-btn active" data-filter="all">{{ section.settings.all_label | default: 'All' }}</button>
+      <button class="collections-directory__nav-btn" data-filter="#">#</button>
+      {% assign alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" | split: "" %}
+      {% for letter in alphabet %}
+        <button class="collections-directory__nav-btn" data-filter="{{ letter }}">{{ letter }}</button>
+      {% endfor %}
+    </div>
+
+    <!-- Collections Grid -->
+    <div class="collections-directory__grid">
+      {% liquid
+        case section.settings.sort
+          when 'alphabetical_reversed'
+            assign sorted_collections = collections | sort: 'title' | reverse
+          when 'date'
+            assign sorted_collections = collections | sort: 'published_at'
+          when 'date_reversed'
+            assign sorted_collections = collections | sort: 'published_at' | reverse
+          when 'products_high'
+            assign sorted_collections = collections | sort: 'all_products_count' | reverse
+          when 'products_low'
+            assign sorted_collections = collections | sort: 'all_products_count'
+          else
+            assign sorted_collections = collections | sort: 'title'
+        endcase
+      %}
+
+      <div class="collections-directory__column collections-directory__column--left">
+        {% assign half_size = sorted_collections.size | divided_by: 2 | plus: 1 %}
+        {% for collection in sorted_collections limit: half_size %}
+          {% unless section.settings.hide_empty_collections and collection.products_count == 0 %}
+            {% assign first_char = collection.title | slice: 0 | upcase %}
+            {% assign is_number = '0123456789' | split: '' %}
+            {% if is_number contains first_char %}
+              {% assign first_char = '#' %}
+            {% endif %}
+            <div class="collections-directory__item" data-letter="{{ first_char }}" data-name="{{ collection.title | downcase }}">
+              <a href="{{ collection.url }}" class="collections-directory__link">
+                {{ collection.title }}
+              </a>
+            </div>
+          {% endunless %}
+        {% endfor %}
+      </div>
+
+      <div class="collections-directory__column collections-directory__column--right">
+        {% for collection in sorted_collections offset: half_size %}
+          {% unless section.settings.hide_empty_collections and collection.products_count == 0 %}
+            {% assign first_char = collection.title | slice: 0 | upcase %}
+            {% assign is_number = '0123456789' | split: '' %}
+            {% if is_number contains first_char %}
+              {% assign first_char = '#' %}
+            {% endif %}
+            <div class="collections-directory__item" data-letter="{{ first_char }}" data-name="{{ collection.title | downcase }}">
+              <a href="{{ collection.url }}" class="collections-directory__link">
+                {{ collection.title }}
+              </a>
+            </div>
+          {% endunless %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- No Results Message -->
+    <div class="collections-directory__empty" style="display: none;">
+      <p>{{ section.settings.no_results_message | default: 'No collections found.' }}</p>
+    </div>
+  </div>
+</div>
+
+<script>
+class CollectionsDirectory {
+  constructor(container) {
+    this.container = container;
+    this.searchInput = container.querySelector('#collections-search');
+    this.navButtons = container.querySelectorAll('.collections-directory__nav-btn');
+    this.items = container.querySelectorAll('.collections-directory__item');
+    this.emptyMessage = container.querySelector('.collections-directory__empty');
+    this.activeFilter = 'all';
+    this.searchTerm = '';
+    
+    this.init();
+  }
+  
+  init() {
+    this.updateAvailableFilters();
+    this.bindEvents();
+  }
+  
+  bindEvents() {
+    // Search functionality
+    this.searchInput.addEventListener('input', (e) => {
+      this.searchTerm = e.target.value.toLowerCase().trim();
+      this.filterItems();
+    });
+    
+    // Navigation buttons
+    this.navButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        if (button.classList.contains('disabled')) return;
+        
+        this.activeFilter = button.dataset.filter;
+        
+        // Update active button
+        this.navButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        
+        this.filterItems();
+      });
+    });
+  }
+  
+  updateAvailableFilters() {
+    const availableLetters = new Set();
+    this.items.forEach(item => {
+      availableLetters.add(item.dataset.letter);
+    });
+    
+    // Disable navigation buttons for letters without collections
+    this.navButtons.forEach(button => {
+      if (button.dataset.filter !== 'all' && !availableLetters.has(button.dataset.filter)) {
+        button.classList.add('disabled');
+      }
+    });
+  }
+  
+  filterItems() {
+    let visibleCount = 0;
+    
+    this.items.forEach(item => {
+      const matchesFilter = this.activeFilter === 'all' || item.dataset.letter === this.activeFilter;
+      const matchesSearch = this.searchTerm === '' || item.dataset.name.includes(this.searchTerm);
+      
+      if (matchesFilter && matchesSearch) {
+        item.style.display = '';
+        visibleCount++;
+      } else {
+        item.style.display = 'none';
+      }
+    });
+    
+    // Show/hide empty message
+    if (visibleCount === 0) {
+      this.emptyMessage.style.display = 'block';
+    } else {
+      this.emptyMessage.style.display = 'none';
+    }
+  }
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  const containers = document.querySelectorAll('.collections-directory');
+  containers.forEach(container => {
+    new CollectionsDirectory(container);
+  });
+});
+</script>
+
+{% schema %}
+{
+  "name": "Collections Directory",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Designers",
+      "label": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "search_placeholder",
+      "default": "Search designers",
+      "label": "Search placeholder text"
+    },
+    {
+      "type": "text",
+      "id": "all_label",
+      "default": "All",
+      "label": "'All' button label"
+    },
+    {
+      "type": "text",
+      "id": "no_results_message",
+      "default": "No collections found.",
+      "label": "No results message"
+    },
+    {
+      "type": "select",
+      "id": "sort",
+      "label": "Sort collections by",
+      "default": "alphabetical",
+      "options": [
+        {
+          "value": "alphabetical",
+          "label": "Alphabetical (A-Z)"
+        },
+        {
+          "value": "alphabetical_reversed",
+          "label": "Alphabetical (Z-A)"
+        },
+        {
+          "value": "date",
+          "label": "Date created (oldest first)"
+        },
+        {
+          "value": "date_reversed",
+          "label": "Date created (newest first)"
+        },
+        {
+          "value": "products_high",
+          "label": "Product count (high to low)"
+        },
+        {
+          "value": "products_low",
+          "label": "Product count (low to high)"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_empty_collections",
+      "default": true,
+      "label": "Hide empty collections"
+    },
+    {
+      "type": "header",
+      "content": "Section spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collections Directory"
+    }
+  ]
+}
+{% endschema %} 

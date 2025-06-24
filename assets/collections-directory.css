@@ -1,0 +1,204 @@
+.collections-directory {
+  background: #fff;
+}
+
+.collections-directory__header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.collections-directory__title {
+  font-size: 2rem;
+  font-weight: 400;
+  margin: 0;
+  color: #333;
+}
+
+/* Search Box */
+.collections-directory__search {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.collections-directory__search-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.collections-directory__search-input:focus {
+  border-color: #333;
+}
+
+/* Alphabetical Navigation */
+.collections-directory__nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+}
+
+.collections-directory__nav-btn {
+  display: inline-block;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  color: #666;
+  background: transparent;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  border-radius: 3px;
+  min-width: 40px;
+  text-align: center;
+}
+
+.collections-directory__nav-btn:hover {
+  background: #f5f5f5;
+  border-color: #ccc;
+}
+
+.collections-directory__nav-btn.active {
+  background: #333;
+  color: #fff;
+  border-color: #333;
+}
+
+.collections-directory__nav-btn.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Collections Grid */
+.collections-directory__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.collections-directory__column {
+  min-height: 200px;
+}
+
+.collections-directory__item {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f0f0f0;
+  transition: opacity 0.3s ease;
+}
+
+.collections-directory__item:last-child {
+  border-bottom: none;
+}
+
+.collections-directory__link {
+  display: block;
+  color: #333;
+  text-decoration: none;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  transition: color 0.2s ease;
+}
+
+.collections-directory__link:hover {
+  color: #000;
+  text-decoration: underline;
+}
+
+/* Empty State */
+.collections-directory__empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem 0;
+  color: #666;
+  font-style: italic;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .collections-directory__grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .collections-directory__nav {
+    gap: 0.3rem;
+    padding: 0 0.5rem;
+  }
+
+  .collections-directory__nav-btn {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.85rem;
+    min-width: 35px;
+  }
+
+  .collections-directory__title {
+    font-size: 1.5rem;
+  }
+
+  .collections-directory__search-input {
+    max-width: 100%;
+    margin: 0 1rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .collections-directory__nav {
+    justify-content: center;
+    gap: 0.25rem;
+  }
+
+  .collections-directory__nav-btn {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.8rem;
+    min-width: 30px;
+  }
+
+  .collections-directory__header {
+    margin-bottom: 1.5rem;
+  }
+
+  .collections-directory__search {
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* Hide items that don't match search/filter */
+.collections-directory__item[style*='display: none'] {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+/* Smooth transitions */
+.collections-directory__item {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Loading state for better UX */
+.collections-directory.loading .collections-directory__item {
+  opacity: 0.5;
+}
+
+/* Focus styles for accessibility */
+.collections-directory__nav-btn:focus {
+  outline: 2px solid #333;
+  outline-offset: 2px;
+}
+
+.collections-directory__search-input:focus {
+  box-shadow: 0 0 0 2px rgba(51, 51, 51, 0.1);
+}
+
+.collections-directory__link:focus {
+  outline: 2px solid #333;
+  outline-offset: 2px;
+}
