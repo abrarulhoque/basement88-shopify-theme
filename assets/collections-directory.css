@@ -79,15 +79,37 @@
 
 /* Collections Grid */
 .collections-directory__grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
   max-width: 1200px;
   margin: 0 auto;
 }
 
+.collections-directory__columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
 .collections-directory__column {
   min-height: 200px;
+}
+
+/* Letter Blocks */
+.collections-directory__letter-block {
+  margin-bottom: 2rem;
+  transition: opacity 0.3s ease;
+}
+
+.collections-directory__letter-heading {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.collections-directory__letter-items {
+  /* Container for items within each letter block */
 }
 
 .collections-directory__item {
@@ -125,9 +147,13 @@
 
 /* Responsive Design */
 @media screen and (max-width: 768px) {
-  .collections-directory__grid {
+  .collections-directory__columns {
     grid-template-columns: 1fr;
     gap: 1rem;
+  }
+
+  .collections-directory__letter-heading {
+    font-size: 1.2rem;
   }
 
   .collections-directory__nav {

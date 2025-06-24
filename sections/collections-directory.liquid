@@ -51,41 +51,86 @@
           else
             assign sorted_collections = collections | sort: 'title'
         endcase
+
+        assign alphabet = '#,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z' | split: ','
+        assign collections_by_letter = blank
+        for letter in alphabet
+          assign collections_for_letter = blank
+          for collection in sorted_collections
+            unless section.settings.hide_empty_collections and collection.products_count == 0
+              assign first_char = collection.title | slice: 0 | upcase
+              assign is_number = '0123456789' | split: ''
+              if is_number contains first_char
+                assign first_char = '#'
+              endif
+              if first_char == letter
+                assign collections_for_letter = collections_for_letter | append: collection.handle | append: ','
+              endif
+            endunless
+          endfor
+          if collections_for_letter != blank
+            assign collections_by_letter = collections_by_letter | append: letter | append: ':' | append: collections_for_letter | append: '|'
+          endif
+        endfor
+
+        assign all_letter_groups = collections_by_letter | split: '|'
+        assign half_point = all_letter_groups.size | divided_by: 2
       %}
 
-      <div class="collections-directory__column collections-directory__column--left">
-        {% assign half_size = sorted_collections.size | divided_by: 2 | plus: 1 %}
-        {% for collection in sorted_collections limit: half_size %}
-          {% unless section.settings.hide_empty_collections and collection.products_count == 0 %}
-            {% assign first_char = collection.title | slice: 0 | upcase %}
-            {% assign is_number = '0123456789' | split: '' %}
-            {% if is_number contains first_char %}
-              {% assign first_char = '#' %}
+      <div class="collections-directory__columns">
+        <div class="collections-directory__column collections-directory__column--left">
+          {% for i in (0..half_point) %}
+            {% if all_letter_groups[i] != blank %}
+              {% assign letter_data = all_letter_groups[i] | split: ':' %}
+              {% assign letter = letter_data[0] %}
+              {% assign collection_handles = letter_data[1] | split: ',' %}
+              
+              <div class="collections-directory__letter-block" data-letter="{{ letter }}">
+                <h3 class="collections-directory__letter-heading">{{ letter }}</h3>
+                <div class="collections-directory__letter-items">
+                  {% for handle in collection_handles %}
+                    {% if handle != blank %}
+                      {% assign collection = collections[handle] %}
+                      <div class="collections-directory__item" data-letter="{{ letter }}" data-name="{{ collection.title | downcase }}">
+                        <a href="{{ collection.url }}" class="collections-directory__link">
+                          {{ collection.title }}
+                        </a>
+                      </div>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              </div>
             {% endif %}
-            <div class="collections-directory__item" data-letter="{{ first_char }}" data-name="{{ collection.title | downcase }}">
-              <a href="{{ collection.url }}" class="collections-directory__link">
-                {{ collection.title }}
-              </a>
-            </div>
-          {% endunless %}
-        {% endfor %}
-      </div>
+          {% endfor %}
+        </div>
 
-      <div class="collections-directory__column collections-directory__column--right">
-        {% for collection in sorted_collections offset: half_size %}
-          {% unless section.settings.hide_empty_collections and collection.products_count == 0 %}
-            {% assign first_char = collection.title | slice: 0 | upcase %}
-            {% assign is_number = '0123456789' | split: '' %}
-            {% if is_number contains first_char %}
-              {% assign first_char = '#' %}
+        <div class="collections-directory__column collections-directory__column--right">
+          {% assign start_index = half_point | plus: 1 %}
+          {% assign end_index = all_letter_groups.size | minus: 1 %}
+          {% for i in (start_index..end_index) %}
+            {% if all_letter_groups[i] != blank %}
+              {% assign letter_data = all_letter_groups[i] | split: ':' %}
+              {% assign letter = letter_data[0] %}
+              {% assign collection_handles = letter_data[1] | split: ',' %}
+              
+              <div class="collections-directory__letter-block" data-letter="{{ letter }}">
+                <h3 class="collections-directory__letter-heading">{{ letter }}</h3>
+                <div class="collections-directory__letter-items">
+                  {% for handle in collection_handles %}
+                    {% if handle != blank %}
+                      {% assign collection = collections[handle] %}
+                      <div class="collections-directory__item" data-letter="{{ letter }}" data-name="{{ collection.title | downcase }}">
+                        <a href="{{ collection.url }}" class="collections-directory__link">
+                          {{ collection.title }}
+                        </a>
+                      </div>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              </div>
             {% endif %}
-            <div class="collections-directory__item" data-letter="{{ first_char }}" data-name="{{ collection.title | downcase }}">
-              <a href="{{ collection.url }}" class="collections-directory__link">
-                {{ collection.title }}
-              </a>
-            </div>
-          {% endunless %}
-        {% endfor %}
+          {% endfor %}
+        </div>
       </div>
     </div>
 
@@ -140,8 +185,10 @@ class CollectionsDirectory {
   
   updateAvailableFilters() {
     const availableLetters = new Set();
-    this.items.forEach(item => {
-      availableLetters.add(item.dataset.letter);
+    const letterBlocks = this.container.querySelectorAll('.collections-directory__letter-block');
+    
+    letterBlocks.forEach(block => {
+      availableLetters.add(block.dataset.letter);
     });
     
     // Disable navigation buttons for letters without collections
@@ -154,16 +201,32 @@ class CollectionsDirectory {
   
   filterItems() {
     let visibleCount = 0;
+    const letterBlocks = this.container.querySelectorAll('.collections-directory__letter-block');
     
-    this.items.forEach(item => {
-      const matchesFilter = this.activeFilter === 'all' || item.dataset.letter === this.activeFilter;
-      const matchesSearch = this.searchTerm === '' || item.dataset.name.includes(this.searchTerm);
+    // Handle letter blocks
+    letterBlocks.forEach(block => {
+      const blockLetter = block.dataset.letter;
+      const items = block.querySelectorAll('.collections-directory__item');
+      let blockVisibleCount = 0;
       
-      if (matchesFilter && matchesSearch) {
-        item.style.display = '';
-        visibleCount++;
+      items.forEach(item => {
+        const matchesFilter = this.activeFilter === 'all' || item.dataset.letter === this.activeFilter;
+        const matchesSearch = this.searchTerm === '' || item.dataset.name.includes(this.searchTerm);
+        
+        if (matchesFilter && matchesSearch) {
+          item.style.display = '';
+          blockVisibleCount++;
+          visibleCount++;
+        } else {
+          item.style.display = 'none';
+        }
+      });
+      
+      // Show/hide entire letter block based on whether it has visible items
+      if (blockVisibleCount > 0) {
+        block.style.display = '';
       } else {
-        item.style.display = 'none';
+        block.style.display = 'none';
       }
     });
     
