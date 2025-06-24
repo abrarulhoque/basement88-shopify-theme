@@ -15,9 +15,14 @@
   Sort setting: {{ section.settings.sort }}<br>
   <details>
     <summary>All Collections List (click to expand)</summary>
-    {% for collection in collections %}
-      - {{ collection.title }} (Handle: {{ collection.handle }}, Products: {{ collection.products_count }})<br>
-    {% endfor %}
+    {% paginate collections by 250 %}
+      {% for collection in collections %}
+        - {{ collection.title }} (Handle: {{ collection.handle }}, Products: {{ collection.products_count }})<br>
+      {% endfor %}
+      {% if paginate.pages > 1 %}
+        <br><strong>Pagination info:</strong> Page {{ paginate.current_page }} of {{ paginate.pages }}<br>
+      {% endif %}
+    {% endpaginate %}
   </details>
 </div>
 
@@ -51,146 +56,192 @@
 
     <!-- Collections Grid -->
     <div class="collections-directory__grid">
-      {% liquid
-        case section.settings.sort
-          when 'alphabetical_reversed'
-            assign sorted_collections = collections | sort: 'title' | reverse
-          when 'date'
-            assign sorted_collections = collections | sort: 'published_at'
-          when 'date_reversed'
-            assign sorted_collections = collections | sort: 'published_at' | reverse
-          when 'products_high'
-            assign sorted_collections = collections | sort: 'all_products_count' | reverse
-          when 'products_low'
-            assign sorted_collections = collections | sort: 'all_products_count'
-          else
-            assign sorted_collections = collections | sort: 'title'
-        endcase
+      {% paginate collections by 250 %}
+        {% liquid
+          case section.settings.sort
+            when 'alphabetical_reversed'
+              assign sorted_collections = collections | sort: 'title' | reverse
+            when 'date'
+              assign sorted_collections = collections | sort: 'published_at'
+            when 'date_reversed'
+              assign sorted_collections = collections | sort: 'published_at' | reverse
+            when 'products_high'
+              assign sorted_collections = collections | sort: 'all_products_count' | reverse
+            when 'products_low'
+              assign sorted_collections = collections | sort: 'all_products_count'
+            else
+              assign sorted_collections = collections | sort: 'title'
+          endcase
 
-        assign alphabet = '#,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z' | split: ','
-        assign collections_by_letter = blank
-        assign debug_processed_count = 0
-        assign debug_filtered_count = 0
-        
-        for letter in alphabet
-          assign collections_for_letter = blank
-          for collection in sorted_collections
-            assign debug_processed_count = debug_processed_count | plus: 1
-            unless section.settings.hide_empty_collections and collection.products_count == 0
-              assign debug_filtered_count = debug_filtered_count | plus: 1
-              assign first_char = collection.title | slice: 0 | upcase
-              assign is_number = '0123456789' | split: ''
-              if is_number contains first_char
-                assign first_char = '#'
-              endif
-              if first_char == letter
-                assign collections_for_letter = collections_for_letter | append: collection.handle | append: ','
-              endif
-            endunless
+          assign alphabet = '#,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z' | split: ','
+          assign collections_by_letter = blank
+          assign debug_processed_count = 0
+          assign debug_filtered_count = 0
+          
+          for letter in alphabet
+            assign collections_for_letter = blank
+            for collection in sorted_collections
+              assign debug_processed_count = debug_processed_count | plus: 1
+              unless section.settings.hide_empty_collections and collection.products_count == 0
+                assign debug_filtered_count = debug_filtered_count | plus: 1
+                assign first_char = collection.title | slice: 0 | upcase
+                assign is_number = '0123456789' | split: ''
+                if is_number contains first_char
+                  assign first_char = '#'
+                endif
+                if first_char == letter
+                  assign collections_for_letter = collections_for_letter | append: collection.handle | append: ','
+                endif
+              endunless
+            endfor
+            if collections_for_letter != blank
+              assign collections_by_letter = collections_by_letter | append: letter | append: ':' | append: collections_for_letter | append: '|'
+            endif
           endfor
-          if collections_for_letter != blank
-            assign collections_by_letter = collections_by_letter | append: letter | append: ':' | append: collections_for_letter | append: '|'
-          endif
-        endfor
 
-        assign all_letter_groups = collections_by_letter | split: '|'
-        assign half_point = all_letter_groups.size | divided_by: 2
-      %}
+          assign all_letter_groups = collections_by_letter | split: '|'
+          assign half_point = all_letter_groups.size | divided_by: 2
+        %}
 
-      <!-- DEBUG: Processing stats -->
-      <div style="background: #ffffcc; padding: 10px; margin: 10px 0; font-family: monospace; font-size: 12px;">
-        <strong>PROCESSING DEBUG:</strong><br>
-        Collections processed: {{ debug_processed_count }}<br>
-        Collections after filtering: {{ debug_filtered_count }}<br>
-        Letter groups found: {{ all_letter_groups.size }}<br>
-        Half point for columns: {{ half_point }}<br>
-        <details>
-          <summary>Letter Groups Data (click to expand)</summary>
-          {% for group in all_letter_groups %}
-            {% if group != blank %}
-              {{ group }}<br>
-            {% endif %}
-          {% endfor %}
-        </details>
-      </div>
-
-      <div class="collections-directory__columns">
-        <div class="collections-directory__column collections-directory__column--left">
-          {% for i in (0..half_point) %}
-            {% if all_letter_groups[i] != blank %}
-              {% assign letter_data = all_letter_groups[i] | split: ':' %}
-              {% assign letter = letter_data[0] %}
-              {% assign collection_handles = letter_data[1] | split: ',' %}
-              
-              <div class="collections-directory__letter-block" data-letter="{{ letter }}">
-                <h3 class="collections-directory__letter-heading">{{ letter }}</h3>
-                <!-- DEBUG: Letter block info -->
-                <div style="background: #e6f3ff; padding: 5px; margin: 5px 0; font-size: 10px;">
-                  DEBUG - Letter: {{ letter }}, Handles: {{ collection_handles.size }}
-                </div>
-                <div class="collections-directory__letter-items">
-                  {% for handle in collection_handles %}
-                    {% if handle != blank %}
-                      {% assign collection = collections[handle] %}
-                      {% if collection %}
-                        <div class="collections-directory__item" data-letter="{{ letter }}" data-name="{{ collection.title | downcase }}">
-                          <a href="{{ collection.url }}" class="collections-directory__link">
-                            {{ collection.title }}
-                          </a>
-                        </div>
-                      {% else %}
-                        <div style="color: red; font-size: 10px;">DEBUG: Collection not found for handle: {{ handle }}</div>
-                      {% endif %}
-                    {% endif %}
-                  {% endfor %}
-                </div>
-              </div>
-            {% endif %}
-          {% endfor %}
+        <!-- DEBUG: Processing stats -->
+        <div style="background: #ffffcc; padding: 10px; margin: 10px 0; font-family: monospace; font-size: 12px;">
+          <strong>PROCESSING DEBUG:</strong><br>
+          Collections processed: {{ debug_processed_count }}<br>
+          Collections after filtering: {{ debug_filtered_count }}<br>
+          Letter groups found: {{ all_letter_groups.size }}<br>
+          Half point for columns: {{ half_point }}<br>
+          <strong>Pagination info:</strong> Page {{ paginate.current_page }} of {{ paginate.pages }} ({{ paginate.current_size }} items on this page)<br>
+          <details>
+            <summary>Letter Groups Data (click to expand)</summary>
+            {% for group in all_letter_groups %}
+              {% if group != blank %}
+                {{ group }}<br>
+              {% endif %}
+            {% endfor %}
+          </details>
         </div>
 
-        <div class="collections-directory__column collections-directory__column--right">
-          {% assign start_index = half_point | plus: 1 %}
-          {% assign end_index = all_letter_groups.size | minus: 1 %}
-          {% for i in (start_index..end_index) %}
-            {% if all_letter_groups[i] != blank %}
-              {% assign letter_data = all_letter_groups[i] | split: ':' %}
-              {% assign letter = letter_data[0] %}
-              {% assign collection_handles = letter_data[1] | split: ',' %}
-              
-              <div class="collections-directory__letter-block" data-letter="{{ letter }}">
-                <h3 class="collections-directory__letter-heading">{{ letter }}</h3>
-                <!-- DEBUG: Letter block info -->
-                <div style="background: #e6f3ff; padding: 5px; margin: 5px 0; font-size: 10px;">
-                  DEBUG - Letter: {{ letter }}, Handles: {{ collection_handles.size }}
-                </div>
-                <div class="collections-directory__letter-items">
-                  {% for handle in collection_handles %}
-                    {% if handle != blank %}
-                      {% assign collection = collections[handle] %}
-                      {% if collection %}
-                        <div class="collections-directory__item" data-letter="{{ letter }}" data-name="{{ collection.title | downcase }}">
-                          <a href="{{ collection.url }}" class="collections-directory__link">
-                            {{ collection.title }}
-                          </a>
-                        </div>
-                      {% else %}
-                        <div style="color: red; font-size: 10px;">DEBUG: Collection not found for handle: {{ handle }}</div>
+        <div class="collections-directory__columns">
+          <div class="collections-directory__column collections-directory__column--left">
+            {% for i in (0..half_point) %}
+              {% if all_letter_groups[i] != blank %}
+                {% assign letter_data = all_letter_groups[i] | split: ':' %}
+                {% assign letter = letter_data[0] %}
+                {% assign collection_handles = letter_data[1] | split: ',' %}
+                
+                <div class="collections-directory__letter-block" data-letter="{{ letter }}">
+                  <h3 class="collections-directory__letter-heading">{{ letter }}</h3>
+                  <!-- DEBUG: Letter block info -->
+                  <div style="background: #e6f3ff; padding: 5px; margin: 5px 0; font-size: 10px;">
+                    DEBUG - Letter: {{ letter }}, Handles: {{ collection_handles.size }}
+                  </div>
+                  <div class="collections-directory__letter-items">
+                    {% for handle in collection_handles %}
+                      {% if handle != blank %}
+                        {% assign collection = collections[handle] %}
+                        {% if collection %}
+                          <div class="collections-directory__item" data-letter="{{ letter }}" data-name="{{ collection.title | downcase }}">
+                            <a href="{{ collection.url }}" class="collections-directory__link">
+                              {{ collection.title }}
+                            </a>
+                          </div>
+                        {% else %}
+                          <div style="color: red; font-size: 10px;">DEBUG: Collection not found for handle: {{ handle }}</div>
+                        {% endif %}
                       {% endif %}
-                    {% endif %}
-                  {% endfor %}
+                    {% endfor %}
+                  </div>
                 </div>
-              </div>
-            {% endif %}
-          {% endfor %}
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          <div class="collections-directory__column collections-directory__column--right">
+            {% assign start_index = half_point | plus: 1 %}
+            {% assign end_index = all_letter_groups.size | minus: 1 %}
+            {% for i in (start_index..end_index) %}
+              {% if all_letter_groups[i] != blank %}
+                {% assign letter_data = all_letter_groups[i] | split: ':' %}
+                {% assign letter = letter_data[0] %}
+                {% assign collection_handles = letter_data[1] | split: ',' %}
+                
+                <div class="collections-directory__letter-block" data-letter="{{ letter }}">
+                  <h3 class="collections-directory__letter-heading">{{ letter }}</h3>
+                  <!-- DEBUG: Letter block info -->
+                  <div style="background: #e6f3ff; padding: 5px; margin: 5px 0; font-size: 10px;">
+                    DEBUG - Letter: {{ letter }}, Handles: {{ collection_handles.size }}
+                  </div>
+                  <div class="collections-directory__letter-items">
+                    {% for handle in collection_handles %}
+                      {% if handle != blank %}
+                        {% assign collection = collections[handle] %}
+                        {% if collection %}
+                          <div class="collections-directory__item" data-letter="{{ letter }}" data-name="{{ collection.title | downcase }}">
+                            <a href="{{ collection.url }}" class="collections-directory__link">
+                              {{ collection.title }}
+                            </a>
+                          </div>
+                        {% else %}
+                          <div style="color: red; font-size: 10px;">DEBUG: Collection not found for handle: {{ handle }}</div>
+                        {% endif %}
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
         </div>
-      </div>
+
+        <!-- Pagination Controls - Hidden by default, but available for debugging -->
+        {% if paginate.pages > 1 %}
+          <div class="collections-directory__pagination" style="margin-top: 30px; text-align: center; background: #f9f9f9; padding: 20px; border-radius: 5px;">
+            <p style="margin-bottom: 15px; font-weight: bold;">
+              Showing page {{ paginate.current_page }} of {{ paginate.pages }} 
+              ({{ paginate.current_size }} collections on this page)
+            </p>
+            <div class="pagination-nav">
+              {% if paginate.previous %}
+                <a href="{{ paginate.previous.url }}" class="pagination-btn">← Previous</a>
+              {% endif %}
+              
+              {% for part in paginate.parts %}
+                {% if part.is_link %}
+                  <a href="{{ part.url }}" class="pagination-btn">{{ part.title }}</a>
+                {% else %}
+                  <span class="pagination-btn pagination-btn--current">{{ part.title }}</span>
+                {% endif %}
+              {% endfor %}
+              
+              {% if paginate.next %}
+                <a href="{{ paginate.next.url }}" class="pagination-btn">Next →</a>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+
+      {% endpaginate %}
     </div>
 
     <!-- No Results Message -->
     <div class="collections-directory__empty" style="display: none;">
       <p>{{ section.settings.no_results_message | default: 'No collections found.' }}</p>
     </div>
+
+    <!-- Loading Indicator -->
+    <div class="collections-directory__loading" style="display: none; text-align: center; padding: 20px; background: #f0f8ff; border-radius: 5px; margin-top: 20px;">
+      <p style="margin: 0; color: #333;">
+        <span style="display: inline-block; width: 20px; height: 20px; border: 2px solid #ddd; border-top: 2px solid #333; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 10px;"></span>
+        Loading additional collections...
+      </p>
+    </div>
+
+    <style>
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
   </div>
 </div>
 
@@ -202,12 +253,16 @@ class CollectionsDirectory {
     this.navButtons = container.querySelectorAll('.collections-directory__nav-btn');
     this.items = container.querySelectorAll('.collections-directory__item');
     this.emptyMessage = container.querySelector('.collections-directory__empty');
+    this.loadingMessage = container.querySelector('.collections-directory__loading');
+    this.grid = container.querySelector('.collections-directory__grid');
     this.activeFilter = 'all';
     this.searchTerm = '';
+    this.allCollections = [];
+    this.isLoading = false;
     
     // DEBUG: Log initialization info
     console.log('CollectionsDirectory initialized');
-    console.log('Total items found:', this.items.length);
+    console.log('Total items found initially:', this.items.length);
     console.log('Items by letter:', this.getItemsByLetter());
     
     this.init();
@@ -216,6 +271,133 @@ class CollectionsDirectory {
   init() {
     this.updateAvailableFilters();
     this.bindEvents();
+    
+    // Load all collections via API to overcome pagination limits
+    this.loadAllCollectionsViaAPI();
+  }
+  
+  async loadAllCollectionsViaAPI() {
+    // Check if we need to load more collections
+    const totalCollections = parseInt('{{ shop.collections_count }}');
+    const currentlyLoaded = this.items.length;
+    
+    console.log(`Total collections in store: ${totalCollections}, Currently loaded: ${currentlyLoaded}`);
+    
+    if (currentlyLoaded >= totalCollections) {
+      console.log('All collections already loaded via Liquid');
+      return;
+    }
+    
+    console.log('Loading additional collections via pagination...');
+    this.isLoading = true;
+    this.showLoading();
+    
+    try {
+      // Load all pages via AJAX
+      await this.loadAdditionalPages();
+    } catch (error) {
+      console.error('Error loading additional collections:', error);
+    } finally {
+      this.isLoading = false;
+      this.hideLoading();
+    }
+  }
+  
+  async loadAdditionalPages() {
+    const currentPage = {{ paginate.current_page | default: 1 }};
+    const totalPages = {{ paginate.pages | default: 1 }};
+    
+    console.log(`Current page: ${currentPage}, Total pages: ${totalPages}`);
+    
+    if (totalPages <= 1) {
+      console.log('All collections loaded on current page');
+      return;
+    }
+    
+    // Load all subsequent pages
+    for (let page = currentPage + 1; page <= totalPages; page++) {
+      console.log(`Loading page ${page}...`);
+      await this.loadPage(page);
+    }
+    
+    console.log('All collections loaded successfully');
+    this.updateAvailableFilters();
+    this.filterItems();
+  }
+  
+  async loadPage(pageNumber) {
+    try {
+      const url = new URL(window.location);
+      url.searchParams.set('page', pageNumber);
+      
+      const response = await fetch(url.toString());
+      const html = await response.text();
+      
+      // Parse the HTML and extract collection items
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const newItems = doc.querySelectorAll('.collections-directory__item');
+      
+      console.log(`Found ${newItems.length} new items on page ${pageNumber}`);
+      
+      // Add new items to the appropriate letter blocks
+      newItems.forEach(item => {
+        const letter = item.dataset.letter;
+        const letterBlock = this.container.querySelector(`[data-letter="${letter}"] .collections-directory__letter-items`);
+        
+        if (letterBlock) {
+          // Clone the item and append it
+          const clonedItem = item.cloneNode(true);
+          letterBlock.appendChild(clonedItem);
+        } else {
+          // Create new letter block if it doesn't exist
+          this.createLetterBlock(letter, item);
+        }
+      });
+      
+      // Update items list
+      this.items = this.container.querySelectorAll('.collections-directory__item');
+      
+    } catch (error) {
+      console.error(`Error loading page ${pageNumber}:`, error);
+    }
+  }
+  
+  createLetterBlock(letter, firstItem) {
+    const isNumber = '0123456789'.includes(letter);
+    const displayLetter = isNumber ? '#' : letter;
+    
+    // Determine which column to add to (maintain alphabetical order)
+    const leftColumn = this.container.querySelector('.collections-directory__column--left');
+    const rightColumn = this.container.querySelector('.collections-directory__column--right');
+    
+    // Simple logic: letters A-M go to left, N-Z go to right
+    const targetColumn = (letter <= 'M' || letter === '#') ? leftColumn : rightColumn;
+    
+    const letterBlock = document.createElement('div');
+    letterBlock.className = 'collections-directory__letter-block';
+    letterBlock.dataset.letter = displayLetter;
+    
+    letterBlock.innerHTML = `
+      <h3 class="collections-directory__letter-heading">${displayLetter}</h3>
+      <div class="collections-directory__letter-items">
+        ${firstItem.outerHTML}
+      </div>
+    `;
+    
+    targetColumn.appendChild(letterBlock);
+  }
+  
+  showLoading() {
+    if (this.loadingMessage) {
+      this.loadingMessage.style.display = 'block';
+    }
+  }
+  
+  hideLoading() {
+    if (this.loadingMessage) {
+      this.loadingMessage.style.display = 'none';
+    }
   }
   
   getItemsByLetter() {
@@ -267,6 +449,8 @@ class CollectionsDirectory {
     this.navButtons.forEach(button => {
       if (button.dataset.filter !== 'all' && !availableLetters.has(button.dataset.filter)) {
         button.classList.add('disabled');
+      } else {
+        button.classList.remove('disabled');
       }
     });
   }
