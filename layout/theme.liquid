@@ -35,7 +35,7 @@
 		    if product.metafields.custom.product_seo_title != blank
 		      assign potential_title = product.metafields.custom.product_seo_title
 		    else
-		      comment Check if vendor exists and format title accordingly
+		      # Check if vendor exists and format title accordingly
 		      if product.vendor != blank
 		        assign potential_title = product.title | append: " | " | append: product.vendor | append: " | Basement 88"
 		      else
