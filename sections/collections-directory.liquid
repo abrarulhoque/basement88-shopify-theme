@@ -6,6 +6,21 @@
   }
 {% endstyle %}
 
+<!-- DEBUG: Add debug information -->
+{% comment %} DEBUG: Collections count and basic info {% endcomment %}
+<div style="background: #f0f0f0; padding: 10px; margin: 10px 0; font-family: monospace; font-size: 12px;">
+  <strong>DEBUG INFO:</strong><br>
+  Total collections available: {{ collections.size }}<br>
+  Hide empty collections setting: {{ section.settings.hide_empty_collections }}<br>
+  Sort setting: {{ section.settings.sort }}<br>
+  <details>
+    <summary>All Collections List (click to expand)</summary>
+    {% for collection in collections %}
+      - {{ collection.title }} (Handle: {{ collection.handle }}, Products: {{ collection.products_count }})<br>
+    {% endfor %}
+  </details>
+</div>
+
 <div class="collections-directory">
   <div class="container">
     {% if section.settings.heading != blank %}
@@ -54,10 +69,15 @@
 
         assign alphabet = '#,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z' | split: ','
         assign collections_by_letter = blank
+        assign debug_processed_count = 0
+        assign debug_filtered_count = 0
+        
         for letter in alphabet
           assign collections_for_letter = blank
           for collection in sorted_collections
+            assign debug_processed_count = debug_processed_count | plus: 1
             unless section.settings.hide_empty_collections and collection.products_count == 0
+              assign debug_filtered_count = debug_filtered_count | plus: 1
               assign first_char = collection.title | slice: 0 | upcase
               assign is_number = '0123456789' | split: ''
               if is_number contains first_char
@@ -77,6 +97,23 @@
         assign half_point = all_letter_groups.size | divided_by: 2
       %}
 
+      <!-- DEBUG: Processing stats -->
+      <div style="background: #ffffcc; padding: 10px; margin: 10px 0; font-family: monospace; font-size: 12px;">
+        <strong>PROCESSING DEBUG:</strong><br>
+        Collections processed: {{ debug_processed_count }}<br>
+        Collections after filtering: {{ debug_filtered_count }}<br>
+        Letter groups found: {{ all_letter_groups.size }}<br>
+        Half point for columns: {{ half_point }}<br>
+        <details>
+          <summary>Letter Groups Data (click to expand)</summary>
+          {% for group in all_letter_groups %}
+            {% if group != blank %}
+              {{ group }}<br>
+            {% endif %}
+          {% endfor %}
+        </details>
+      </div>
+
       <div class="collections-directory__columns">
         <div class="collections-directory__column collections-directory__column--left">
           {% for i in (0..half_point) %}
@@ -87,15 +124,23 @@
               
               <div class="collections-directory__letter-block" data-letter="{{ letter }}">
                 <h3 class="collections-directory__letter-heading">{{ letter }}</h3>
+                <!-- DEBUG: Letter block info -->
+                <div style="background: #e6f3ff; padding: 5px; margin: 5px 0; font-size: 10px;">
+                  DEBUG - Letter: {{ letter }}, Handles: {{ collection_handles.size }}
+                </div>
                 <div class="collections-directory__letter-items">
                   {% for handle in collection_handles %}
                     {% if handle != blank %}
                       {% assign collection = collections[handle] %}
-                      <div class="collections-directory__item" data-letter="{{ letter }}" data-name="{{ collection.title | downcase }}">
-                        <a href="{{ collection.url }}" class="collections-directory__link">
-                          {{ collection.title }}
-                        </a>
-                      </div>
+                      {% if collection %}
+                        <div class="collections-directory__item" data-letter="{{ letter }}" data-name="{{ collection.title | downcase }}">
+                          <a href="{{ collection.url }}" class="collections-directory__link">
+                            {{ collection.title }}
+                          </a>
+                        </div>
+                      {% else %}
+                        <div style="color: red; font-size: 10px;">DEBUG: Collection not found for handle: {{ handle }}</div>
+                      {% endif %}
                     {% endif %}
                   {% endfor %}
                 </div>
@@ -115,15 +160,23 @@
               
               <div class="collections-directory__letter-block" data-letter="{{ letter }}">
                 <h3 class="collections-directory__letter-heading">{{ letter }}</h3>
+                <!-- DEBUG: Letter block info -->
+                <div style="background: #e6f3ff; padding: 5px; margin: 5px 0; font-size: 10px;">
+                  DEBUG - Letter: {{ letter }}, Handles: {{ collection_handles.size }}
+                </div>
                 <div class="collections-directory__letter-items">
                   {% for handle in collection_handles %}
                     {% if handle != blank %}
                       {% assign collection = collections[handle] %}
-                      <div class="collections-directory__item" data-letter="{{ letter }}" data-name="{{ collection.title | downcase }}">
-                        <a href="{{ collection.url }}" class="collections-directory__link">
-                          {{ collection.title }}
-                        </a>
-                      </div>
+                      {% if collection %}
+                        <div class="collections-directory__item" data-letter="{{ letter }}" data-name="{{ collection.title | downcase }}">
+                          <a href="{{ collection.url }}" class="collections-directory__link">
+                            {{ collection.title }}
+                          </a>
+                        </div>
+                      {% else %}
+                        <div style="color: red; font-size: 10px;">DEBUG: Collection not found for handle: {{ handle }}</div>
+                      {% endif %}
                     {% endif %}
                   {% endfor %}
                 </div>
@@ -152,6 +205,11 @@ class CollectionsDirectory {
     this.activeFilter = 'all';
     this.searchTerm = '';
     
+    // DEBUG: Log initialization info
+    console.log('CollectionsDirectory initialized');
+    console.log('Total items found:', this.items.length);
+    console.log('Items by letter:', this.getItemsByLetter());
+    
     this.init();
   }
   
@@ -160,10 +218,21 @@ class CollectionsDirectory {
     this.bindEvents();
   }
   
+  getItemsByLetter() {
+    const letterMap = {};
+    this.items.forEach(item => {
+      const letter = item.dataset.letter;
+      if (!letterMap[letter]) letterMap[letter] = 0;
+      letterMap[letter]++;
+    });
+    return letterMap;
+  }
+  
   bindEvents() {
     // Search functionality
     this.searchInput.addEventListener('input', (e) => {
       this.searchTerm = e.target.value.toLowerCase().trim();
+      console.log('Search term changed:', this.searchTerm);
       this.filterItems();
     });
     
@@ -173,6 +242,7 @@ class CollectionsDirectory {
         if (button.classList.contains('disabled')) return;
         
         this.activeFilter = button.dataset.filter;
+        console.log('Filter changed to:', this.activeFilter);
         
         // Update active button
         this.navButtons.forEach(btn => btn.classList.remove('active'));
@@ -191,6 +261,8 @@ class CollectionsDirectory {
       availableLetters.add(block.dataset.letter);
     });
     
+    console.log('Available letters:', Array.from(availableLetters));
+    
     // Disable navigation buttons for letters without collections
     this.navButtons.forEach(button => {
       if (button.dataset.filter !== 'all' && !availableLetters.has(button.dataset.filter)) {
@@ -202,6 +274,8 @@ class CollectionsDirectory {
   filterItems() {
     let visibleCount = 0;
     const letterBlocks = this.container.querySelectorAll('.collections-directory__letter-block');
+    
+    console.log('Filtering with:', { filter: this.activeFilter, search: this.searchTerm });
     
     // Handle letter blocks
     letterBlocks.forEach(block => {
@@ -229,6 +303,8 @@ class CollectionsDirectory {
         block.style.display = 'none';
       }
     });
+    
+    console.log('Visible items after filtering:', visibleCount);
     
     // Show/hide empty message
     if (visibleCount === 0) {

@@ -1,1 +1,226 @@
-{"sections":{"banner":{"type":"main-collection-banner","disabled":true,"settings":{"collection_list":[],"add_word":"Collection","show_word":false,"show_collection_description":false,"description_products":"","image_size":"landscape","show_collection_image":false}},"rich_text_NJbzm4":{"type":"rich-text","blocks":{"subheading_fMrgj3":{"type":"subheading","settings":{"subheading":"BROWSE ALL","animation":false}},"heading_QNHFJh":{"type":"heading","settings":{"heading":"{{ collection.title }}","heading_size":"h2"}}},"block_order":["subheading_fMrgj3","heading_QNHFJh"],"disabled":true,"settings":{"color_scheme":"","full_width":true,"content_horizontal":"center","margin_top":"xs","margin_bottom":"xs","padding_top":"xs","padding_bottom":"xs"}},"product-grid":{"type":"main-collection-product-grid","disabled":true,"settings":{"products_per_page":12,"show_two_cards":false,"show_secondary_image":true,"show_sku":false,"show_vendor":true,"show_desc":false,"show_color_swatch":false,"product_variant_type":"color","image_ratio":"portrait","image_fit":"cover","color_scheme":"","enable_filtering":true,"filter_type":"vertical","enable_per_row_button":true,"default_per_row":"small","enable_sorting":true,"image_filter_ratio":"4\/5","image_filter_fit":"cover","image_filter_columns":3,"padding_top":"no-indent","padding_bottom":"s"}},"az_collections_grid_qbxwHj":{"type":"az-collections-grid","blocks":{"collection_BaYVEG":{"type":"collection","settings":{"collection":""}},"collection_9QzUYU":{"type":"collection","settings":{"collection":""}},"collection_dFAMTL":{"type":"collection","settings":{"collection":""}}},"block_order":["collection_BaYVEG","collection_9QzUYU","collection_dFAMTL"],"name":"A-Z Collections Grid","settings":{"section_header_type":"type1","subheading":"","heading":"Designers","description":"<p>Explore thousands of the latest limited designer pieces at up to 60% discount.<\/p>","enable_border_top":true,"metaobject_type":"az_collections_list","metaobject_handles":"az-collections-list-twtuk1lv,az-collections-list-jyo37fbp","metaobject_handle":"","metafield_namespace":"","metafield_key":"","all_label":"All","no_results_message":"No collections found for this letter.","show_empty_collections":false,"per_row":4,"sort":"alphabetical","image_ratio":"square","card_type":"overlay","hover_effect":"zoom","text_horizontal":"center","overlay_opacity":20,"heading_size":"h2","desc_size":"medium-font","text_animation":true,"show_collection_desc":true,"show_collection_button":true,"button_label":"View collection","button_arrow":true,"margin_top":"no-indent","margin_bottom":"l"}},"slider_with_info_pmWUxx":{"type":"slider-with-info","blocks":{"image_block_nbtWi9":{"type":"image_block","settings":{"image":"shopify:\/\/shop_images\/cargo-trousers_dc9d5f28-a586-4e2c-ab7b-9767e77adcdf.jpg"}},"image_block_7TDEaA":{"type":"image_block","settings":{"image":"shopify:\/\/shop_images\/classic-oversized-denim-shirt_24158564-0913-4fad-aae8-a9f35565ca06.jpg"}},"image_block_Pm3neF":{"type":"image_block","settings":{"image":"shopify:\/\/shop_images\/pinstriped-blazer_e2220441-655e-412d-b822-09235aee2b89.jpg"}},"image_block_geKh8K":{"type":"image_block","settings":{"image":"shopify:\/\/shop_images\/ottie-bias-backless-dress_5339a1e6-d555-453d-84c7-42beace4ee42.jpg"}},"image_block_CcbzcX":{"type":"image_block","settings":{"image":"shopify:\/\/shop_images\/gothic-logo-zip-up-hoodie_ce410a47-5e15-44cf-8528-35132dbbb0a4.jpg"}},"image_block_fLxeM8":{"type":"image_block","settings":{"image":"shopify:\/\/shop_images\/porterville-edfu-t-dress_092c32e4-62f9-495b-b953-fb99a450e068.jpg"}},"heading_block_mwkipf":{"type":"heading_block","settings":{"heading":"OVER 40,000 PRODUCTS","description":"<p>Browse leading fashion brands and get the look today.<\/p><p>We stock thousands of unique items from industry-defining designers, but once they're gone, <em>they're gone<\/em>.<\/p>","subheading":"SHOP NOW"}}},"block_order":["image_block_nbtWi9","image_block_7TDEaA","image_block_Pm3neF","image_block_geKh8K","image_block_CcbzcX","image_block_fLxeM8","heading_block_mwkipf"],"settings":{"section_header_type":"type1","enable_border_top":true,"subheading":"","heading":"OVER 200 LABELS","description":"","button_label":"","button_link":"","button_style":"primary","button_arrow":false,"is_autoplay":true,"stop_autoplay":true,"show_arrows":true,"slideshow_speed":1.1,"slideshow_delay":1,"image_ratio":"portrait","margin_top":"s","margin_bottom":"s"}},"17392096783286d83a":{"type":"apps","blocks":{"essential_trust_badges_app_block_mX9NnL":{"type":"shopify:\/\/apps\/essential-trust-badges\/blocks\/app-block\/0ff65b25-07e1-408e-950f-f54dd3d1751b","settings":{"banner_display":"all","banner_id":""}}},"block_order":["essential_trust_badges_app_block_mX9NnL"],"settings":{"include_margins":true}},"1739209635fd7fd4bf":{"type":"apps","settings":{"include_margins":true}},"newsletter_XhR6Rd":{"type":"newsletter","settings":{"color_scheme":"","position":"center","heading":"BE FIRST TO KNOW.","text":"<p>Get notified each time we drop new products in store. Because once they're gone, <em>they're gone<\/em>.<\/p>","newsletter_text":"<p>By subscribing you agree to our <a href=\"\/pages\/terms-conditions\" target=\"_blank\" title=\"GENERAL CONDITIONS OF SALE\">General Terms<\/a> and <a href=\"\/pages\/privacy-policy\" title=\"PRIVACY POLICY\">Privacy Policy<\/a>.<\/p>","button_style":"primary","margin_top":"no-indent","margin_bottom":"s","padding_top":"no-indent","padding_bottom":"no-indent"}}},"order":["banner","rich_text_NJbzm4","product-grid","az_collections_grid_qbxwHj","slider_with_info_pmWUxx","17392096783286d83a","1739209635fd7fd4bf","newsletter_XhR6Rd"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "banner": {
+      "type": "main-collection-banner",
+      "disabled": true,
+      "settings": {
+        "collection_list": [],
+        "add_word": "Collection",
+        "show_word": false,
+        "show_collection_description": false,
+        "description_products": "",
+        "image_size": "landscape",
+        "show_collection_image": false
+      }
+    },
+    "rich_text_NJbzm4": {
+      "type": "rich-text",
+      "blocks": {
+        "subheading_fMrgj3": {
+          "type": "subheading",
+          "settings": {
+            "subheading": "BROWSE ALL",
+            "animation": false
+          }
+        },
+        "heading_QNHFJh": {
+          "type": "heading",
+          "settings": {
+            "heading": "{{ collection.title }}",
+            "heading_size": "h2"
+          }
+        }
+      },
+      "block_order": [
+        "subheading_fMrgj3",
+        "heading_QNHFJh"
+      ],
+      "disabled": true,
+      "settings": {
+        "color_scheme": "",
+        "full_width": true,
+        "content_horizontal": "center",
+        "margin_top": "xs",
+        "margin_bottom": "xs",
+        "padding_top": "xs",
+        "padding_bottom": "xs"
+      }
+    },
+    "product-grid": {
+      "type": "main-collection-product-grid",
+      "disabled": true,
+      "settings": {
+        "products_per_page": 12,
+        "show_two_cards": false,
+        "show_secondary_image": true,
+        "show_sku": false,
+        "show_vendor": true,
+        "show_desc": false,
+        "show_color_swatch": false,
+        "product_variant_type": "color",
+        "image_ratio": "portrait",
+        "image_fit": "cover",
+        "color_scheme": "",
+        "enable_filtering": true,
+        "filter_type": "vertical",
+        "enable_per_row_button": true,
+        "default_per_row": "small",
+        "enable_sorting": true,
+        "image_filter_ratio": "4/5",
+        "image_filter_fit": "cover",
+        "image_filter_columns": 3,
+        "padding_top": "no-indent",
+        "padding_bottom": "s"
+      }
+    },
+    "collections_directory_LjrftA": {
+      "type": "collections-directory",
+      "name": "Collections Directory",
+      "settings": {
+        "heading": "Designers",
+        "search_placeholder": "Search designers",
+        "all_label": "All",
+        "no_results_message": "No collections found.",
+        "sort": "alphabetical",
+        "hide_empty_collections": true,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "slider_with_info_pmWUxx": {
+      "type": "slider-with-info",
+      "blocks": {
+        "image_block_nbtWi9": {
+          "type": "image_block",
+          "settings": {
+            "image": "shopify://shop_images/cargo-trousers_dc9d5f28-a586-4e2c-ab7b-9767e77adcdf.jpg"
+          }
+        },
+        "image_block_7TDEaA": {
+          "type": "image_block",
+          "settings": {
+            "image": "shopify://shop_images/classic-oversized-denim-shirt_24158564-0913-4fad-aae8-a9f35565ca06.jpg"
+          }
+        },
+        "image_block_Pm3neF": {
+          "type": "image_block",
+          "settings": {
+            "image": "shopify://shop_images/pinstriped-blazer_e2220441-655e-412d-b822-09235aee2b89.jpg"
+          }
+        },
+        "image_block_geKh8K": {
+          "type": "image_block",
+          "settings": {
+            "image": "shopify://shop_images/ottie-bias-backless-dress_5339a1e6-d555-453d-84c7-42beace4ee42.jpg"
+          }
+        },
+        "image_block_CcbzcX": {
+          "type": "image_block",
+          "settings": {
+            "image": "shopify://shop_images/gothic-logo-zip-up-hoodie_ce410a47-5e15-44cf-8528-35132dbbb0a4.jpg"
+          }
+        },
+        "image_block_fLxeM8": {
+          "type": "image_block",
+          "settings": {
+            "image": "shopify://shop_images/porterville-edfu-t-dress_092c32e4-62f9-495b-b953-fb99a450e068.jpg"
+          }
+        },
+        "heading_block_mwkipf": {
+          "type": "heading_block",
+          "settings": {
+            "heading": "OVER 40,000 PRODUCTS",
+            "description": "<p>Browse leading fashion brands and get the look today.</p><p>We stock thousands of unique items from industry-defining designers, but once they're gone, <em>they're gone</em>.</p>",
+            "subheading": "SHOP NOW"
+          }
+        }
+      },
+      "block_order": [
+        "image_block_nbtWi9",
+        "image_block_7TDEaA",
+        "image_block_Pm3neF",
+        "image_block_geKh8K",
+        "image_block_CcbzcX",
+        "image_block_fLxeM8",
+        "heading_block_mwkipf"
+      ],
+      "settings": {
+        "section_header_type": "type1",
+        "enable_border_top": true,
+        "subheading": "",
+        "heading": "OVER 200 LABELS",
+        "description": "",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "primary",
+        "button_arrow": false,
+        "is_autoplay": true,
+        "stop_autoplay": true,
+        "show_arrows": true,
+        "slideshow_speed": 1.1,
+        "slideshow_delay": 1,
+        "image_ratio": "portrait",
+        "margin_top": "s",
+        "margin_bottom": "s"
+      }
+    },
+    "17392096783286d83a": {
+      "type": "apps",
+      "blocks": {
+        "essential_trust_badges_app_block_mX9NnL": {
+          "type": "shopify://apps/essential-trust-badges/blocks/app-block/0ff65b25-07e1-408e-950f-f54dd3d1751b",
+          "settings": {
+            "banner_display": "all",
+            "banner_id": ""
+          }
+        }
+      },
+      "block_order": [
+        "essential_trust_badges_app_block_mX9NnL"
+      ],
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "1739209635fd7fd4bf": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "newsletter_XhR6Rd": {
+      "type": "newsletter",
+      "settings": {
+        "color_scheme": "",
+        "position": "center",
+        "heading": "BE FIRST TO KNOW.",
+        "text": "<p>Get notified each time we drop new products in store. Because once they're gone, <em>they're gone</em>.</p>",
+        "newsletter_text": "<p>By subscribing you agree to our <a href=\"/pages/terms-conditions\" target=\"_blank\" title=\"GENERAL CONDITIONS OF SALE\">General Terms</a> and <a href=\"/pages/privacy-policy\" title=\"PRIVACY POLICY\">Privacy Policy</a>.</p>",
+        "button_style": "primary",
+        "margin_top": "no-indent",
+        "margin_bottom": "s",
+        "padding_top": "no-indent",
+        "padding_bottom": "no-indent"
+      }
+    }
+  },
+  "order": [
+    "banner",
+    "rich_text_NJbzm4",
+    "product-grid",
+    "collections_directory_LjrftA",
+    "slider_with_info_pmWUxx",
+    "17392096783286d83a",
+    "1739209635fd7fd4bf",
+    "newsletter_XhR6Rd"
+  ]
+}
