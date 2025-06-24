@@ -2,6 +2,7 @@
 {{ 'section-main-product.css' | asset_url | stylesheet_tag }}
 {{ 'component-accordion.css' | asset_url | stylesheet_tag }}
 {{ 'component-price.css' | asset_url | stylesheet_tag }}
+{{ 'component-discounts.css' | asset_url | stylesheet_tag }}
 {{ 'component-rte.css' | asset_url | stylesheet_tag }}
 {{ 'component-slider.css' | asset_url | stylesheet_tag }}
 
@@ -303,10 +304,23 @@
                 {% endif %}
               {%- when 'title' -%}
                 {% if product.title != blank %}
-                  <div class="product__title__wrapper">
+                  <div class="product__title__wrapper" style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
                     <h1 class="product__title h3" {{ block.shopify_attributes }}>
                       {{ product.title | escape }}
                     </h1>
+                    {%- assign selected_variant = product.selected_or_first_available_variant -%}
+                    {%- if selected_variant.compare_at_price > selected_variant.price and selected_variant.available -%}
+                      <span
+                        class="badge badge--sale {% if settings.badges_background %} badge-transparent {% endif %}"
+                        aria-hidden="true"
+                      >
+                        {% if settings.badge_sale_type == 'sale' %}
+                          {{- 'products.product.on_sale' | t -}}
+                        {% else %}
+                          -{{ selected_variant.compare_at_price | minus: selected_variant.price | times: 100 | divided_by: selected_variant.compare_at_price }}%
+                        {% endif %}
+                      </span>
+                    {%- endif -%}
                   </div>
                 {% endif %}
 
