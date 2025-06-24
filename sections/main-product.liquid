@@ -26,6 +26,14 @@
   			scroll-behavior: smooth;
   	}
   {% endif %}
+
+  {%- for block in section.blocks -%}
+    {%- if block.type == 'price' and block.settings.price_font_size -%}
+      #price-{{ section.id }} .price-item {
+        font-size: {{ block.settings.price_font_size }}px !important;
+      }
+    {%- endif -%}
+  {%- endfor -%}
 {%- endstyle -%}
 
 {%- assign first_3d_model = product.media | where: 'media_type', 'model' | first -%}
@@ -1797,7 +1805,19 @@ customElements.define('product-recommendations--single', ProductRecommendations)
 		{
 			"type": "price",
 			"name": "t:sections.main-product.blocks.price.name",
-			"limit": 1
+			"limit": 1,
+			"settings": [
+				{
+					"type": "range",
+					"id": "price_font_size",
+					"min": 12,
+					"max": 48,
+					"step": 1,
+					"unit": "px",
+					"label": "Price font size",
+					"default": 18
+				}
+			]
 		},
 		{
 			"type": "sku",

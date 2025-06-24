@@ -35,10 +35,15 @@
 		    if product.metafields.custom.product_seo_title != blank
 		      assign potential_title = product.metafields.custom.product_seo_title
 		    else
-		      assign potential_title = product.title | append: " | Basement88"
+		      comment Check if vendor exists and format title accordingly
+		      if product.vendor != blank
+		        assign potential_title = product.title | append: " | " | append: product.vendor | append: " | Basement 88"
+		      else
+		        assign potential_title = product.title | append: " | Basement 88"
+		      endif
 		    endif
 		  elsif page_title != blank
-		     assign potential_title = page_title | append: " | Basement88"
+		     assign potential_title = page_title | append: " | Basement 88"
 		  else
 		     assign potential_title = shop.name
 		  endif
