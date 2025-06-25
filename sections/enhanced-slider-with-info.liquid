@@ -30,26 +30,33 @@
 			<div class="enhanced-slider-images">
 				<div class="swiper enhanced-image-swiper">
 					<div class="swiper-wrapper">
-						{% liquid
-							assign media_size = section.settings.image_ratio
-							case media_size
-								when 'landscape'
-									assign image_size = '56.25%'
-								when 'portrait'
-									assign image_size = '130%'
-								when 'square'
-									assign image_size = '100%'
-								when 'auto'
-									assign image_size = 'auto'
-								else
-									assign image_size = '75%'
-							endcase
-						%}
-						{% style %}
-							#shopify-section-{{ section.id }} .enhanced-slider-image {
-								--slide-height: {{ image_size }};
-							}
-						{% endstyle %}
+								{% liquid
+			assign media_size = section.settings.image_ratio
+			case media_size
+				when 'landscape'
+					assign image_size = '56.25%'
+				when 'portrait'
+					if section.settings.custom_height_enabled
+						assign image_size = section.settings.custom_height | append: 'px'
+					else
+						assign image_size = '130%'
+					endif
+				when 'square'
+					assign image_size = '100%'
+				when 'auto'
+					assign image_size = 'auto'
+				else
+					assign image_size = '75%'
+			endcase
+			
+			assign object_fit = section.settings.image_fit | default: 'cover'
+		%}
+		{% style %}
+			#shopify-section-{{ section.id }} .enhanced-slider-image {
+				--slide-height: {{ image_size }};
+				--image-fit: {{ object_fit }};
+			}
+		{% endstyle %}
 						{%- for block in section.blocks -%}
 							{% if block.type == 'image_block' %}
 								<div class="enhanced-slider-slide swiper-slide" {{ block.shopify_attributes }}>
@@ -394,6 +401,10 @@
 			"label": "t:sections.all.slider_options.delay.label"
 		},
 		{
+			"type": "header",
+			"content": "Image Settings"
+		},
+		{
 			"type": "select",
 			"id": "image_ratio",
 			"options": [
@@ -420,6 +431,48 @@
 			],
 			"default": "landscape",
 			"label": "Image Aspect Ratio"
+		},
+		{
+			"type": "checkbox",
+			"id": "custom_height_enabled",
+			"default": false,
+			"label": "Use Custom Height for Portrait",
+			"info": "Only applies when Portrait aspect ratio is selected"
+		},
+		{
+			"type": "range",
+			"id": "custom_height",
+			"min": 200,
+			"max": 800,
+			"step": 10,
+			"default": 400,
+			"unit": "px",
+			"label": "Custom Image Height",
+			"info": "Only applies when Portrait aspect ratio and custom height are enabled"
+		},
+		{
+			"type": "select",
+			"id": "image_fit",
+			"options": [
+				{
+					"value": "cover",
+					"label": "Cover (Fill container, may crop)"
+				},
+				{
+					"value": "contain",
+					"label": "Contain (Show full image, may have gaps)"
+				},
+				{
+					"value": "fill",
+					"label": "Fill (Stretch to fit)"
+				},
+				{
+					"value": "scale-down",
+					"label": "Scale Down (Show full image, never upscale)"
+				}
+			],
+			"default": "cover",
+			"label": "Image Fit"
 		},
 		{
 			"type": "header",
