@@ -1,0 +1,607 @@
+{{ 'enhanced-slider-with-info.css' | asset_url | stylesheet_tag }}
+
+<script src="{{ 'enhanced-slider-with-info.js' | asset_url }}" defer="defer"></script>
+{% style %}
+	{% render 'section-margin' %}
+{% endstyle %}
+
+{% liquid
+	assign autoplay = section.settings.is_autoplay
+	assign stop_autoplay = section.settings.stop_autoplay
+	assign slideshow_delay = section.settings.slideshow_delay
+	assign slideshow_speed = section.settings.slideshow_speed
+	assign show_arrows = section.settings.show_arrows
+	assign show_dots = section.settings.show_dots
+	assign animation_style = section.settings.animation_style
+%}
+
+<div
+	class="enhanced-slider-with-info"
+	data-id="shopify-section-{{ section.id }}"
+	data-autoplay="{{ autoplay }}"
+	data-stop-autoplay="{{ stop_autoplay }}"
+	data-speed="{{ slideshow_speed }}"
+	data-delay="{{ slideshow_delay }}"
+	data-animation="{{ animation_style }}"
+>
+	{% render 'section-header' %}
+	<div class="container">
+		<div class="enhanced-slider-wrapper {{ section.settings.layout_style }}">
+			<div class="enhanced-slider-images">
+				<div class="swiper enhanced-image-swiper">
+					<div class="swiper-wrapper">
+						{% liquid
+							assign media_size = section.settings.image_ratio
+							case media_size
+								when 'landscape'
+									assign image_size = '56.25%'
+								when 'portrait'
+									assign image_size = '130%'
+								when 'square'
+									assign image_size = '100%'
+								when 'auto'
+									assign image_size = 'auto'
+								else
+									assign image_size = '75%'
+							endcase
+						%}
+						{% style %}
+							#shopify-section-{{ section.id }} .enhanced-slider-image {
+								--slide-height: {{ image_size }};
+							}
+						{% endstyle %}
+						{%- for block in section.blocks -%}
+							{% if block.type == 'image_block' %}
+								<div class="enhanced-slider-slide swiper-slide" {{ block.shopify_attributes }}>
+									<div class="enhanced-slider-image">
+										{% if block.settings.video != blank %}
+											{% liquid
+												assign video_height = block.settings.video.sources[0].width | divided_by: block.settings.video.aspect_ratio
+											%}
+											{{
+												block.settings.video
+												| video_tag:
+													width: block.settings.video.sources[0].width,
+													height: video_height,
+													autoplay: true,
+													loop: true,
+													controls: false,
+													muted: true
+											}}
+										{%- elsif block.settings.image != blank -%}
+											{% assign image_height = block.settings.image.width
+												| divided_by: block.settings.image.aspect_ratio
+											%}
+											{{
+												block.settings.image
+												| image_url: width: 3840
+												| image_tag:
+													loading: 'lazy',
+													width: block.settings.image.width,
+													height: image_height,
+													sizes: '100vw',
+													widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840',
+													alt: block.settings.image.alt | escape
+											}}
+										{%- else -%}
+											{{
+												'image'
+												| placeholder_svg_tag: 'placeholder-svg placeholder'
+											}}
+										{%- endif -%}
+										
+										{% if block.settings.overlay_enabled %}
+											<div class="image-overlay" style="background: {{ block.settings.overlay_color }}; opacity: {{ block.settings.overlay_opacity | divided_by: 100.0 }};"></div>
+										{% endif %}
+									</div>
+								</div>
+							{% endif %}
+						{%- endfor -%}
+					</div>
+					
+					{% if show_arrows %}
+						<div class="swiper-button-prev enhanced-nav-button">
+							{% render 'icon-arrow-big-left' %}
+						</div>
+						<div class="swiper-button-next enhanced-nav-button">
+							{% render 'icon-arrow-big-right' %}
+						</div>
+					{% endif %}
+					
+					{% if show_dots %}
+						<div class="swiper-pagination enhanced-pagination"></div>
+					{% endif %}
+				</div>
+				
+				{% if section.settings.show_progress_bar %}
+					<div class="enhanced-progress-bar">
+						<div class="progress-fill"></div>
+					</div>
+				{% endif %}
+			</div>
+			
+			<div class="enhanced-slider-content">
+				<div class="content-wrapper">
+					{%- for block in section.blocks -%}
+						{% if block.type == 'heading_block' %}
+							<div class="heading-content-block animated-content" {{ block.shopify_attributes }}>
+								{%- if block.settings.heading != blank -%}
+									<h2 class="enhanced-heading {{ section.settings.heading_size }}">
+										{{ block.settings.heading }}
+									</h2>
+								{%- endif -%}
+								{%- if block.settings.description != blank -%}
+									<div class="enhanced-description richtext__content">
+										{{ block.settings.description }}
+									</div>
+								{%- endif -%}
+								{%- if block.settings.subheading != blank -%}
+									<div class="enhanced-subheading badge">
+										{{ block.settings.subheading }}
+									</div>
+								{%- endif -%}
+							</div>
+						{%- endif -%}
+					{%- endfor -%}
+					
+					<div class="enhanced-text-blocks">
+						{%- for block in section.blocks -%}
+							{% if block.type == 'text_block' %}
+								<div class="enhanced-text-block animated-content" {{ block.shopify_attributes }}>
+									{%- if block.settings.icon != blank -%}
+										<div class="block-icon">
+											{{ block.settings.icon }}
+										</div>
+									{%- endif -%}
+									{%- if block.settings.subheading != blank -%}
+										<h3 class="block-subtitle">
+											{{ block.settings.subheading }}
+										</h3>
+									{%- endif -%}
+									{%- if block.settings.description != blank -%}
+										<div class="block-description richtext__content">
+											{{ block.settings.description }}
+										</div>
+									{%- endif -%}
+								</div>
+							{%- endif -%}
+						{%- endfor -%}
+					</div>
+					
+					{% if section.settings.section_header_type == 'type1' and section.settings.button_label != blank %}
+						<div class="enhanced-button-wrapper">
+							{% render 'button', layout: section %}
+						</div>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% schema %}
+{
+	"name": "Enhanced Slider with Info",
+	"tag": "section",
+	"class": "spaced-section section-enhanced-slider-with-info",
+	"enabled_on": {
+		"templates": ["*"]
+	},
+	"settings": [
+		{
+			"type": "select",
+			"id": "section_header_type",
+			"label": "t:sections.all.section_header.header.content",
+			"default": "type2",
+			"options": [
+				{
+					"value": "type1",
+					"label": "t:sections.all.section_header.options.options__1.label"
+				},
+				{
+					"value": "type2",
+					"label": "t:sections.all.section_header.options.options__2.label"
+				}
+			]
+		},
+		{
+			"type": "checkbox",
+			"id": "enable_border_top",
+			"default": true,
+			"label": "t:sections.all.section_header.border"
+		},
+		{
+			"type": "text",
+			"id": "subheading",
+			"label": "t:sections.all.subheading.label"
+		},
+		{
+			"type": "inline_richtext",
+			"id": "heading",
+			"default": "Enhanced Slider Heading",
+			"label": "t:sections.all.heading.label"
+		},
+		{
+			"type": "richtext",
+			"id": "description",
+			"label": "t:sections.all.description.label"
+		},
+		{
+			"type": "header",
+			"content": "Layout Settings"
+		},
+		{
+			"type": "select",
+			"id": "layout_style",
+			"label": "Layout Style",
+			"default": "side-by-side",
+			"options": [
+				{
+					"value": "side-by-side",
+					"label": "Side by Side"
+				},
+				{
+					"value": "stacked",
+					"label": "Stacked"
+				},
+				{
+					"value": "content-overlay",
+					"label": "Content Overlay"
+				}
+			]
+		},
+		{
+			"type": "select",
+			"id": "heading_size",
+			"label": "Heading Size",
+			"default": "h2",
+			"options": [
+				{
+					"value": "h1",
+					"label": "Extra Large"
+				},
+				{
+					"value": "h2",
+					"label": "Large"
+				},
+				{
+					"value": "h3",
+					"label": "Medium"
+				},
+				{
+					"value": "h4",
+					"label": "Small"
+				}
+			]
+		},
+		{
+			"type": "select",
+			"id": "animation_style",
+			"label": "Animation Style",
+			"default": "fade",
+			"options": [
+				{
+					"value": "slide",
+					"label": "Slide"
+				},
+				{
+					"value": "fade",
+					"label": "Fade"
+				},
+				{
+					"value": "creative",
+					"label": "Creative"
+				},
+				{
+					"value": "coverflow",
+					"label": "Coverflow"
+				}
+			]
+		},
+		{
+			"type": "header",
+			"content": "t:sections.all.button.header.content"
+		},
+		{
+			"type": "text",
+			"id": "button_label",
+			"label": "t:sections.all.button.label.label",
+			"info": "t:sections.all.button.label.info"
+		},
+		{
+			"type": "url",
+			"id": "button_link",
+			"label": "t:sections.all.button.link.label"
+		},
+		{
+			"type": "select",
+			"id": "button_style",
+			"options": [
+				{
+					"value": "primary",
+					"label": "t:sections.all.button.style.options__1.label"
+				},
+				{
+					"value": "secondary",
+					"label": "t:sections.all.button.style.options__2.label"
+				},
+				{
+					"value": "tertiary",
+					"label": "t:sections.all.button.style.options__3.label"
+				}
+			],
+			"default": "primary",
+			"label": "t:sections.all.button.style.label"
+		},
+		{
+			"type": "checkbox",
+			"id": "button_arrow",
+			"default": false,
+			"label": "t:sections.all.button.arrow.label"
+		},
+		{
+			"type": "header",
+			"content": "Slider Options"
+		},
+		{
+			"type": "checkbox",
+			"id": "is_autoplay",
+			"default": false,
+			"label": "t:sections.all.slider_options.slider_is_autoplay.label"
+		},
+		{
+			"type": "checkbox",
+			"id": "stop_autoplay",
+			"default": true,
+			"label": "t:sections.all.slider_options.slider_hover_autoplay_stop.label"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_arrows",
+			"default": true,
+			"label": "Show Navigation Arrows"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_dots",
+			"default": true,
+			"label": "Show Pagination Dots"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_progress_bar",
+			"default": false,
+			"label": "Show Progress Bar"
+		},
+		{
+			"type": "range",
+			"id": "slideshow_speed",
+			"min": 0,
+			"max": 6,
+			"step": 0.1,
+			"default": 1.1,
+			"unit": "s",
+			"label": "t:sections.all.slider_options.speed.label"
+		},
+		{
+			"type": "range",
+			"id": "slideshow_delay",
+			"min": 0,
+			"max": 8,
+			"step": 0.1,
+			"default": 3,
+			"unit": "s",
+			"label": "t:sections.all.slider_options.delay.label"
+		},
+		{
+			"type": "select",
+			"id": "image_ratio",
+			"options": [
+				{
+					"value": "landscape",
+					"label": "Landscape (16:9)"
+				},
+				{
+					"value": "portrait",
+					"label": "Portrait (4:5)"
+				},
+				{
+					"value": "square",
+					"label": "Square (1:1)"
+				},
+				{
+					"value": "wide",
+					"label": "Wide (21:9)"
+				},
+				{
+					"value": "auto",
+					"label": "Auto Height"
+				}
+			],
+			"default": "landscape",
+			"label": "Image Aspect Ratio"
+		},
+		{
+			"type": "header",
+			"content": "t:sections.all.section-margin.header.content"
+		},
+		{
+			"type": "select",
+			"id": "margin_top",
+			"options": [
+				{
+					"value": "no-indent",
+					"label": "t:sections.all.section-margin.options__1.label"
+				},
+				{
+					"value": "xs",
+					"label": "t:sections.all.section-margin.options__2.label"
+				},
+				{
+					"value": "s",
+					"label": "t:sections.all.section-margin.options__3.label"
+				},
+				{
+					"value": "m",
+					"label": "t:sections.all.section-margin.options__4.label"
+				},
+				{
+					"value": "l",
+					"label": "t:sections.all.section-margin.options__5.label"
+				}
+			],
+			"default": "no-indent",
+			"label": "t:sections.all.section-margin.margin_top.label"
+		},
+		{
+			"type": "select",
+			"id": "margin_bottom",
+			"options": [
+				{
+					"value": "no-indent",
+					"label": "t:sections.all.section-margin.options__1.label"
+				},
+				{
+					"value": "xs",
+					"label": "t:sections.all.section-margin.options__2.label"
+				},
+				{
+					"value": "s",
+					"label": "t:sections.all.section-margin.options__3.label"
+				},
+				{
+					"value": "m",
+					"label": "t:sections.all.section-margin.options__4.label"
+				},
+				{
+					"value": "l",
+					"label": "t:sections.all.section-margin.options__5.label"
+				}
+			],
+			"default": "l",
+			"label": "t:sections.all.section-margin.margin_bottom.label"
+		}
+	],
+	"blocks": [
+		{
+			"type": "image_block",
+			"name": "Image Block",
+			"limit": 10,
+			"settings": [
+				{
+					"type": "image_picker",
+					"id": "image",
+					"label": "t:sections.all.image.label"
+				},
+				{
+					"type": "video",
+					"id": "video",
+					"label": "t:sections.all.video.label"
+				},
+				{
+					"type": "header",
+					"content": "Overlay Settings"
+				},
+				{
+					"type": "checkbox",
+					"id": "overlay_enabled",
+					"default": false,
+					"label": "Enable Image Overlay"
+				},
+				{
+					"type": "color",
+					"id": "overlay_color",
+					"default": "#000000",
+					"label": "Overlay Color"
+				},
+				{
+					"type": "range",
+					"id": "overlay_opacity",
+					"min": 0,
+					"max": 80,
+					"step": 5,
+					"default": 30,
+					"unit": "%",
+					"label": "Overlay Opacity"
+				}
+			]
+		},
+		{
+			"type": "heading_block",
+			"name": "Heading Block",
+			"limit": 1,
+			"settings": [
+				{
+					"type": "inline_richtext",
+					"id": "heading",
+					"default": "Premium Collection",
+					"label": "t:sections.all.heading.label"
+				},
+				{
+					"type": "richtext",
+					"id": "description",
+					"default": "<p>Discover our curated selection of premium products designed to elevate your style and enhance your lifestyle.</p>",
+					"label": "t:sections.all.description.label"
+				},
+				{
+					"type": "text",
+					"id": "subheading",
+					"default": "NEW ARRIVALS",
+					"label": "t:sections.all.subheading.label"
+				}
+			]
+		},
+		{
+			"type": "text_block",
+			"name": "Feature Block",
+			"limit": 6,
+			"settings": [
+				{
+					"type": "text",
+					"id": "icon",
+					"label": "Icon (SVG or Emoji)",
+					"default": "✨",
+					"info": "Add an emoji or paste SVG code"
+				},
+				{
+					"type": "text",
+					"id": "subheading",
+					"default": "Feature Title",
+					"label": "t:sections.all.subheading.label"
+				},
+				{
+					"type": "richtext",
+					"id": "description",
+					"default": "<p>Add compelling feature description here that highlights the benefits of your products or services.</p>",
+					"label": "t:sections.all.description.label"
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "Enhanced Slider with Info",
+			"blocks": [
+				{
+					"type": "image_block"
+				},
+				{
+					"type": "image_block"
+				},
+				{
+					"type": "image_block"
+				},
+				{
+					"type": "heading_block"
+				},
+				{
+					"type": "text_block"
+				},
+				{
+					"type": "text_block"
+				}
+			]
+		}
+	]
+}
+{% endschema %} 
