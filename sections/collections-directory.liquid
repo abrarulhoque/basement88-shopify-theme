@@ -158,64 +158,32 @@
         %}
 
 
-        <div class="collections-directory__columns">
-          <div class="collections-directory__column collections-directory__column--left">
-            {% for i in (0..half_point) %}
-              {% if all_letter_groups[i] != blank %}
-                {% assign letter_data = all_letter_groups[i] | split: ':' %}
-                {% assign letter = letter_data[0] %}
-                {% assign collection_handles = letter_data[1] | split: ',' %}
-                
-                <div class="collections-directory__letter-block" data-letter="{{ letter }}">
-                  <h3 class="collections-directory__letter-heading">{{ letter }}</h3>
-                  <div class="collections-directory__letter-items">
-                    {% for handle in collection_handles %}
-                      {% if handle != blank %}
-                        {% assign collection = collections[handle] %}
-                        {% if collection %}
-                          <div class="collections-directory__item" data-letter="{{ letter }}" data-name="{{ collection.title | downcase }}">
-                            <a href="{{ collection.url }}" class="collections-directory__link">
-                              {{ collection.title }}
-                            </a>
-                          </div>
-                        {% endif %}
+        <div class="collections-directory__wrapper">
+          {% for letter_group in all_letter_groups %}
+            {% if letter_group != blank %}
+              {% assign letter_data = letter_group | split: ':' %}
+              {% assign letter = letter_data[0] %}
+              {% assign collection_handles = letter_data[1] | split: ',' %}
+              
+              <div class="collections-directory__letter-section" data-letter="{{ letter }}">
+                <h3 class="collections-directory__letter-heading">{{ letter }}</h3>
+                <div class="collections-directory__letter-grid">
+                  {% for handle in collection_handles %}
+                    {% if handle != blank %}
+                      {% assign collection = collections[handle] %}
+                      {% if collection %}
+                        <div class="collections-directory__item" data-letter="{{ letter }}" data-name="{{ collection.title | downcase }}">
+                          <a href="{{ collection.url }}" class="collections-directory__link">
+                            {{ collection.title }}
+                          </a>
+                        </div>
                       {% endif %}
-                    {% endfor %}
-                  </div>
+                    {% endif %}
+                  {% endfor %}
                 </div>
-              {% endif %}
-            {% endfor %}
-          </div>
-
-          <div class="collections-directory__column collections-directory__column--right">
-            {% assign start_index = half_point | plus: 1 %}
-            {% assign end_index = all_letter_groups.size | minus: 1 %}
-            {% for i in (start_index..end_index) %}
-              {% if all_letter_groups[i] != blank %}
-                {% assign letter_data = all_letter_groups[i] | split: ':' %}
-                {% assign letter = letter_data[0] %}
-                {% assign collection_handles = letter_data[1] | split: ',' %}
-                
-                <div class="collections-directory__letter-block" data-letter="{{ letter }}">
-                  <h3 class="collections-directory__letter-heading">{{ letter }}</h3>
-                  <div class="collections-directory__letter-items">
-                    {% for handle in collection_handles %}
-                      {% if handle != blank %}
-                        {% assign collection = collections[handle] %}
-                        {% if collection %}
-                          <div class="collections-directory__item" data-letter="{{ letter }}" data-name="{{ collection.title | downcase }}">
-                            <a href="{{ collection.url }}" class="collections-directory__link">
-                              {{ collection.title }}
-                            </a>
-                          </div>
-                        {% endif %}
-                      {% endif %}
-                    {% endfor %}
-                  </div>
-                </div>
-              {% endif %}
-            {% endfor %}
-          </div>
+              </div>
+            {% endif %}
+          {% endfor %}
         </div>
     </div>
 
@@ -281,12 +249,11 @@ class CollectionsDirectory {
   
   updateAvailableFilters() {
     const availableLetters = new Set();
-    const letterBlocks = this.container.querySelectorAll('.collections-directory__letter-block');
+    const letterSections = this.container.querySelectorAll('.collections-directory__letter-section');
     
-    letterBlocks.forEach(block => {
-      availableLetters.add(block.dataset.letter);
+    letterSections.forEach(section => {
+      availableLetters.add(section.dataset.letter);
     });
-    
     
     // Disable navigation buttons for letters without collections
     this.navButtons.forEach(button => {
@@ -300,14 +267,13 @@ class CollectionsDirectory {
   
   filterItems() {
     let visibleCount = 0;
-    const letterBlocks = this.container.querySelectorAll('.collections-directory__letter-block');
+    const letterSections = this.container.querySelectorAll('.collections-directory__letter-section');
     
-    
-    // Handle letter blocks
-    letterBlocks.forEach(block => {
-      const blockLetter = block.dataset.letter;
-      const items = block.querySelectorAll('.collections-directory__item');
-      let blockVisibleCount = 0;
+    // Handle letter sections
+    letterSections.forEach(section => {
+      const sectionLetter = section.dataset.letter;
+      const items = section.querySelectorAll('.collections-directory__item');
+      let sectionVisibleCount = 0;
       
       items.forEach(item => {
         const matchesFilter = this.activeFilter === 'all' || item.dataset.letter === this.activeFilter;
@@ -315,21 +281,20 @@ class CollectionsDirectory {
         
         if (matchesFilter && matchesSearch) {
           item.style.display = '';
-          blockVisibleCount++;
+          sectionVisibleCount++;
           visibleCount++;
         } else {
           item.style.display = 'none';
         }
       });
       
-      // Show/hide entire letter block based on whether it has visible items
-      if (blockVisibleCount > 0) {
-        block.style.display = '';
+      // Show/hide entire letter section based on whether it has visible items
+      if (sectionVisibleCount > 0) {
+        section.style.display = '';
       } else {
-        block.style.display = 'none';
+        section.style.display = 'none';
       }
     });
-    
     
     // Show/hide empty message
     if (visibleCount === 0) {
