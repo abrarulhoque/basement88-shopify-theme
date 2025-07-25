@@ -86,6 +86,20 @@
                 endif
               endfor
             endif
+          elsif section.settings.metafield_namespace != blank and section.settings.metafield_key != blank
+            # Legacy metafield approach
+            assign metafield_collections = shop.metafields[section.settings.metafield_namespace][section.settings.metafield_key].value
+            
+            if metafield_collections.size > 0
+              for collection_handle in metafield_collections
+                assign collection = collections[collection_handle]
+                if collection
+                  if collection.products_count > 0 or section.settings.hide_empty_collections == false
+                    assign all_collections_to_display = all_collections_to_display | append: collection.handle | append: ','
+                  endif
+                endif
+              endfor
+            endif
           else
             # Fallback to all collections
             paginate collections by 250
@@ -424,6 +438,22 @@ document.addEventListener('DOMContentLoaded', () => {
       "id": "metaobject_handle",
       "label": "Metaobject handle (single)",
       "info": "e.g. az-collections-list-twtuk1lv (handle of your metaobject entry)"
+    },
+    {
+      "type": "header",
+      "content": "Legacy Metafield Collection Selection"
+    },
+    {
+      "type": "text",
+      "id": "metafield_namespace",
+      "label": "Metafield namespace",
+      "info": "e.g. custom"
+    },
+    {
+      "type": "text",
+      "id": "metafield_key",
+      "label": "Metafield key",
+      "info": "e.g. az_collections"
     },
     {
       "type": "header",
