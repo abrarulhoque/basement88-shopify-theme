@@ -1,1 +1,43 @@
-{"sections":{"main":{"type":"main-page","settings":{}}},"order":["main"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {
+        "padding_top": "no-indent",
+        "padding_bottom": "no-indent"
+      }
+    },
+    "collections_directory_tfbRdk": {
+      "type": "collections-directory",
+      "name": "Collections Directory",
+      "settings": {
+        "heading": "Designers",
+        "search_placeholder": "Search designers",
+        "all_label": "All",
+        "no_results_message": "No collections found.",
+        "sort": "alphabetical",
+        "hide_empty_collections": false,
+        "metaobject_type": "az_collections_list",
+        "metaobject_handles": "az-collections-list-twtuk1lv, az-collections-list-twtuk1lv",
+        "metaobject_handle": "",
+        "metafield_namespace": "",
+        "metafield_key": "",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    }
+  },
+  "order": [
+    "main",
+    "collections_directory_tfbRdk"
+  ]
+}
